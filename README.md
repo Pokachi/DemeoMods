@@ -20,4 +20,4 @@ Put the DifficultyMod.dll under Mod folder created by MelonLoader in your game d
 
 
 # Uninstallation
-Delete DifficultyMod.dll
+Delete DifficultyMod.dll from the Mod folder.
