@@ -12,7 +12,7 @@ Planned Mods:
 # Installation
 This mod depends on MelonLoader v0.3.1, available [here](https://github.com/LavaGang/MelonLoader/actions/runs/851850441).
 
-Once MelonLoader is installed, run it the game once to setup all the directories.
+Once MelonLoader is installed, run the game once to setup all the directories.
 
 Go to the releases tab and download the DifficultyMod.dll file from the latest release.
 
