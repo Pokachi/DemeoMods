@@ -40,4 +40,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: DemeoMods
-        path: DifficultyMod\bin\Release\DifficultyMod.dll
+        path: DemeoMods\DifficultyMod\bin\Release\DifficultyMod.dll
