@@ -1,7 +1,21 @@
 # GENERAL INFORMATION:
 Collection of DemeoMods I may or may not make.
 
-Currently, it'll add a Difficulty Menu where you can adjust Enemy HP Multiplier before going into a game.
+Currently, It's just a Difficulty Mod with the following options:
+1. Adjust Enemy HP
+1. Adjust Enemy Damage
+1. Adjust Energy Gain from discard, killing enemy, and attacking (may separate this into 3 separating settings)
+1. Adjust Gold Gain from Gold Piles
+
+Planned Feature for Difficulty Mod:
+1. Selling Card Multiplier
+1. Enable Enemy Opening Doors Toggle
+1. Enable Coin Flip Toggle
+1. Ability to Set Coin Flip Damage
+1. Enable Hunters Mark Stacking Toggle
+1. Enable Monster Respawn Toggle
+1. Monster Respawn Rate Multiplier ? (not sure how to do this yet)
+1. Mutators? e.g. all enemies does poison on attack, randomly become invulnerable for a turn, etc. (not sure how to do this yet)
 
 Planned Mods:
 1. Difficulty Mod
