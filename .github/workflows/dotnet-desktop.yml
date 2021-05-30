@@ -39,5 +39,5 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: DemeoMods
-        path: DemeoMods\DifficultyMod\bin\Release\DifficultyMod.dll
+        name: DifficultyMod.dll
+        path: DifficultyMod\bin\Release\DifficultyMod.dll
