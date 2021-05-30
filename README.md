@@ -1,7 +1,7 @@
 # GENERAL INFORMATION:
 Collection of DemeoMods I may or may not make.
 
-Currently, tt'll add a Difficulty Menu where you can adjust Enemy HP Multiplier before going into a game.
+Currently, it'll add a Difficulty Menu where you can adjust Enemy HP Multiplier before going into a game.
 
 Planned Mods:
 1. Difficulty Mod
