@@ -47,9 +47,9 @@ jobs:
       id: create_release
       with:
         # The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag
-        tag_name: ${{ github.run_number }}
+        tag_name: v0.2.${{ github.run_number }}
         # The name of the release. For example, `Release v1.0.1`
-        release_name: Build ${{ github.run_number }}
+        release_name: Build v0.2.${{ github.run_number }}
         #Commit message as description
         body: ${{ github.event.head_commit.message }} 
       env:
