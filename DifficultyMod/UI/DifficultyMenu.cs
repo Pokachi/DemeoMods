@@ -38,7 +38,7 @@ namespace DemeoMods.DifficultyMod.UI
 
             gameObject.SetActive(true);
 
-            MelonLogger.Msg("(DifficultyMod|Info) Creating UI Elements...");
+            MelonLogger.Msg("Creating UI Elements...");
 
             // First Page
             GameObject difficultySettingsPageOne = new GameObject("Difficulty Settings 1");
@@ -63,6 +63,9 @@ namespace DemeoMods.DifficultyMod.UI
             _EnemyHPMultiplier = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier Text", DifficultySettings.EnemyHPMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
             CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, 0.4f), "Enemy HP Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyHPMultiplier(text => { UpdateText(_EnemyHPMultiplier, text); }); });
             CreateButton(enemyHPMultiplier.transform, new Vector3(1f, 0.15f, 0.4f), "Enemy HP Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyHPMultiplier(text => { UpdateText(_EnemyHPMultiplier, text); }); });
+
+
+            MelonLogger.Msg("Completed Creating UI Elements.");
         }
 
         private static void UpdateText(TextMeshPro textMeshPro, float text)

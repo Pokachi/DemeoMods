@@ -1,5 +1,4 @@
-﻿using DemeoMods.DifficultyMod.Core;
-using DemeoMods.DifficultyMod.UI;
+﻿using DemeoMods.DifficultyMod.UI;
 using MelonLoader;
 using UnityEngine;
 
@@ -13,7 +12,10 @@ namespace DemeoMods.DifficultyMod
         {
             if (LOBBY_SCENE_NAME.Equals(sceneName))
             {
+                MelonLogger.Msg("Initializing...");
                 new GameObject("Difficulty Menu", typeof(DifficultyMenu));
+
+                MelonLogger.Msg("Completed Loading DifficultyMod");
             }
         }
     }

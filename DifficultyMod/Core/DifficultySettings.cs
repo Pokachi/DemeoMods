@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using TMPro;
 
 namespace DemeoMods.DifficultyMod.Core
 {
