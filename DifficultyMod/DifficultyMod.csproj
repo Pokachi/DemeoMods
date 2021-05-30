@@ -72,6 +72,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\DifficultyPatcher.cs" />
     <Compile Include="Core\DifficultySettings.cs" />
     <Compile Include="DifficultyMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

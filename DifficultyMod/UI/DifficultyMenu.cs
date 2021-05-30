@@ -9,6 +9,12 @@ namespace DemeoMods.DifficultyMod.UI
 {
     class DifficultyMenu : MonoBehaviour
     {
+        private const int TOTAL_PAGES = 2;
+        private static int currentPage = 1;
+
+        private static GameObject difficultySettingsPageOne;
+        private static GameObject difficultySettingsPageTwo;
+
         private void Awake()
         {
             Initialize();
@@ -16,7 +22,7 @@ namespace DemeoMods.DifficultyMod.UI
 
         public void Initialize()
         {
-            MelonLogger.Msg("Creating UI Elements...");
+            MelonLogger.Msg("Initializing UI Elements...");
             gameObject.SetActive(false);
             gameObject.layer = 5; //UI layer
 
@@ -37,38 +43,81 @@ namespace DemeoMods.DifficultyMod.UI
 
             gameObject.SetActive(true);
 
-
+            #region First_Page
             // First Page
-            GameObject difficultySettingsPageOne = new GameObject("Difficulty Settings 1");
-            difficultySettingsPageOne.transform.SetParent(transform);
-            difficultySettingsPageOne.transform.localScale = Vector3.one;
-            difficultySettingsPageOne.transform.localRotation = Quaternion.Euler(0, 0, 0);
-            difficultySettingsPageOne.transform.localPosition = Vector3.zero;
-            difficultySettingsPageOne.SetActive(true);
+            difficultySettingsPageOne = CreateContainer(transform, "Difficulty Settings 1");
 
-            // Header 
+            // Header
             CreateText(difficultySettingsPageOne.transform, new Vector3(0.036f, 0.15f, 2.4f), 3f, new Color(0.878f, 0.752f, 0.384f, 1), "Difficulty Menu", TextAlignmentOptions.Center, FontStyles.UpperCase);
 
             // Enemy HP Multiplier
-            GameObject enemyHPMultiplier = new GameObject("Enemy HP Multiplier");
-            enemyHPMultiplier.transform.SetParent(difficultySettingsPageOne.transform);
-            enemyHPMultiplier.transform.localScale = Vector3.one;
-            enemyHPMultiplier.transform.localRotation = Quaternion.Euler(0, 0, 0);
-            enemyHPMultiplier.transform.localPosition = Vector3.zero;
-            enemyHPMultiplier.SetActive(true);
+            GameObject enemyHPMultiplier = CreateContainer(difficultySettingsPageOne.transform, "Enemy HP Multiplier");
+            CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 1.4f), 3.25f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro enemyHPMultiplierValue = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier Text", DifficultySettings.EnemyHPMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, 0.4f), "Enemy HP Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyHPMultiplier(text => { UpdateText(enemyHPMultiplierValue, text); }); });
+            CreateButton(enemyHPMultiplier.transform, new Vector3(1.1f, 0.15f, 0.4f), "Enemy HP Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyHPMultiplier(text => { UpdateText(enemyHPMultiplierValue, text); }); });
 
-            CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 1.4f), 3.5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro _EnemyHPMultiplier = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier Text", DifficultySettings.EnemyHPMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, 0.4f), "Enemy HP Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyHPMultiplier(text => { UpdateText(_EnemyHPMultiplier, text); }); });
-            CreateButton(enemyHPMultiplier.transform, new Vector3(1f, 0.15f, 0.4f), "Enemy HP Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyHPMultiplier(text => { UpdateText(_EnemyHPMultiplier, text); }); });
+            // Enemy Attack Multiplier
+            GameObject enemyAttackMultiplier = CreateContainer(difficultySettingsPageOne.transform, "Enemy Attack Multiplier");
+            CreateText(enemyAttackMultiplier.transform, new Vector3(0.036f, 0.15f, -.6f), 3.25f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro enemyAttackMultiplierValue = CreateText(enemyAttackMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier Text", DifficultySettings.EnemyAttackMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(enemyAttackMultiplier.transform, new Vector3(-1f, 0.15f, -1.6f), "Enemy Attack Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyAttackMultiplier(text => { UpdateText(enemyAttackMultiplierValue, text); }); });
+            CreateButton(enemyAttackMultiplier.transform, new Vector3(1.1f, 0.15f, -1.6f), "Enemy Attack Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyAttackMultiplier(text => { UpdateText(enemyAttackMultiplierValue, text); }); });
 
+            // Energy Gain Multiplier
+            GameObject energyGainMultiplier = CreateContainer(difficultySettingsPageOne.transform, "Energy Gain Multiplier");
+            CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 3.25f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro energyGainMultiplierValue = CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain Multiplier Text", DifficultySettings.EnergyGainMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(energyGainMultiplier.transform, new Vector3(-1f, 0.15f, -3.6f), "Energy Gain Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
+            CreateButton(energyGainMultiplier.transform, new Vector3(1.1f, 0.15f, -3.6f), "Energy Gain Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
 
-            CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, -.6f), 3.5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro _EnemyAttackMultiplier = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier Text", DifficultySettings.EnemyAttackMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, -1.6f), "Enemy Attack Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyAttackMultiplier(text => { UpdateText(_EnemyAttackMultiplier, text); }); });
-            CreateButton(enemyHPMultiplier.transform, new Vector3(1f, 0.15f, -1.6f), "Enemy Attack Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyAttackMultiplier(text => { UpdateText(_EnemyAttackMultiplier, text); }); });
+            // Navigation Button
+            GameObject pageOneNavigationButtons = CreateContainer(difficultySettingsPageOne.transform, "Navigation Buttons");
+            CreateButton(pageOneNavigationButtons.transform, new Vector3(-1.5f, 0.15f, -5.6f), "Previous Page", "DreadArrowDown", () => { ChangePage((currentPage - 1) % TOTAL_PAGES); }, new Vector3 (0.7f, 0.7f, 0.7f));
+            CreateText(pageOneNavigationButtons.transform, new Vector3(0.036f, 0.15f, -5.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Page 1", TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(pageOneNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
+            #endregion First_Page
 
-            MelonLogger.Msg("Completed Creating UI Elements.");
+            #region Second_Page
+            // First Page
+            difficultySettingsPageTwo = CreateContainer(transform, "Difficulty Settings 2");
+            difficultySettingsPageTwo.SetActive(false);
+
+            // Header
+            CreateText(difficultySettingsPageTwo.transform, new Vector3(0.036f, 0.15f, 2.4f), 3f, new Color(0.878f, 0.752f, 0.384f, 1), "Difficulty Menu", TextAlignmentOptions.Center, FontStyles.UpperCase);
+
+            // Navigation Button
+            GameObject pageTwoNavigationButtons = CreateContainer(difficultySettingsPageTwo.transform, "Navigation Buttons");
+            CreateButton(pageTwoNavigationButtons.transform, new Vector3(-1.5f, 0.15f, -5.6f), "Previous Page", "DreadArrowDown", () => { ChangePage((currentPage - 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
+            CreateText(pageTwoNavigationButtons.transform, new Vector3(0.036f, 0.15f, -5.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Page 2", TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(pageTwoNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
+
+            // Gold Pile Multiplier
+            GameObject goldPileMultiplier = CreateContainer(difficultySettingsPageTwo.transform, "Gold Pile Multiplier");
+            CreateText(goldPileMultiplier.transform, new Vector3(0.036f, 0.15f, 1.4f), 3.25f, new Color(0.0392f, 0.0157f, 0, 1), "Gold Pile Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro goldPileMultiplierValue = CreateText(goldPileMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Gold Pile Multiplier Text", DifficultySettings.GoldPileGainMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(goldPileMultiplier.transform, new Vector3(-1f, 0.15f, 0.4f), "Gold Pile Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseGoldPileGainMultiplier(text => { UpdateText(goldPileMultiplierValue, text); }); });
+            CreateButton(goldPileMultiplier.transform, new Vector3(1.1f, 0.15f, 0.4f), "Gold Pile Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseGoldPileGainMultiplier(text => { UpdateText(goldPileMultiplierValue, text); }); });
+            #endregion Second_Page
+
+            MelonLogger.Msg("Initialized UI Elements.");
+        }
+
+        private static void ChangePage(int newPage)
+        {
+            currentPage = newPage == 0 ? TOTAL_PAGES : newPage;
+
+            switch (currentPage)
+            {
+                case 1:
+                    difficultySettingsPageOne.SetActive(true);
+                    difficultySettingsPageTwo.SetActive(false);
+                    break;
+                case 2:
+                    difficultySettingsPageOne.SetActive(false);
+                    difficultySettingsPageTwo.SetActive(true);
+                    break;
+            }
         }
 
         private static void UpdateText(TextMeshPro textMeshPro, float text)
@@ -76,7 +125,25 @@ namespace DemeoMods.DifficultyMod.UI
             textMeshPro.SetText(text.ToString());
         }
 
+        private static GameObject CreateContainer(Transform parent, string containerName)
+        {
+            GameObject gameObject = new GameObject(containerName);
+            gameObject.SetActive(false);
+            gameObject.transform.SetParent(parent);
+            gameObject.transform.localScale = Vector3.one;
+            gameObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            gameObject.transform.localPosition = Vector3.zero;
+            gameObject.SetActive(true);
+
+            return gameObject;
+        }
+
         private static ClickableButton CreateButton(Transform parent, Vector3 position, string buttonName, string meshName, Action callback)
+        {
+            return CreateButton(parent, position, buttonName, meshName, callback, new Vector3(0.5f, 0.5f, 0.5f));
+        }
+
+        private static ClickableButton CreateButton(Transform parent, Vector3 position, string buttonName, string meshName, Action callback, Vector3 scale)
         {
             GameObject gameObject = new GameObject(buttonName, typeof(MeshFilter), typeof(MeshRenderer), typeof(MenuButtonHoverEffect), typeof(ClickableButton));
             gameObject.SetActive(false);
@@ -88,7 +155,7 @@ namespace DemeoMods.DifficultyMod.UI
             transform.SetParent(parent, false);
             transform.localRotation = Quaternion.Euler(0, 90, 0);
             transform.localPosition = position;
-            transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            transform.localScale = scale;
 
             // Mesh Filter
             MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
