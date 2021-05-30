@@ -17,6 +17,8 @@ Planned Feature for Difficulty Mod:
 1. Monster Respawn Rate Multiplier ? (not sure how to do this yet)
 1. Mutators? e.g. all enemies does poison on attack, randomly become invulnerable for a turn, etc. (not sure how to do this yet)
 
+DifficultyMod is turned off for public online games. It will only enable in private online games and single player offline games. This is to make sure people don't randomly join a modded game. Please play in private online lobby or offline single player if you plan to use this mod.
+
 Planned Mods:
 1. Difficulty Mod
 1. Sorting Cards in Hand
