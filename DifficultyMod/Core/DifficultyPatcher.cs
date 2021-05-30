@@ -1,6 +1,8 @@
 ﻿using Boardgame;
 using Boardgame.BoardEntities;
+using Boardgame.Data;
 using Boardgame.Networking;
+using Boardgame.SerializableEvents;
 using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
@@ -120,6 +122,18 @@ namespace DemeoMods.DifficultyMod.Core
                 if (IsPrivateGame())
                 {
                     __result *= DifficultySettings.EnergyGainMultiplier;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(SerializableEventPickup), MethodType.Constructor, typeof(int), typeof(IntPoint2D), typeof(bool))]
+        class GoldPileGainMultiplierPatcher
+        {
+            static void Postfix(SerializableEventPickup __instance)
+            {
+                if (IsPrivateGame())
+                {
+                    __instance.goldAmount = (int) (__instance.goldAmount * DifficultySettings.GoldPileGainMultiplier);
                 }
             }
         }
