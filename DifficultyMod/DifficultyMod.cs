@@ -14,9 +14,11 @@ namespace DemeoMods.DifficultyMod
             if (LOBBY_SCENE_NAME.Equals(sceneName))
             {
                 MelonLogger.Msg("Initializing...");
+
                 new GameObject("Difficulty Menu", typeof(DifficultyMenu));
-                new DifficultyPatcher();
-                MelonLogger.Msg("Completed Loading DifficultyMod");
+                DifficultyPatcher.SetGameStateMachine();
+
+                MelonLogger.Msg("Initialized.");
             }
         }
     }

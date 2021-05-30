@@ -16,7 +16,7 @@ namespace DemeoMods.DifficultyMod.UI
 
         public void Initialize()
         {
-            MelonLogger.Msg("Creating UI Elements...");
+            MelonLogger.Msg("Initializing UI Elements...");
             gameObject.SetActive(false);
             gameObject.layer = 5; //UI layer
 
@@ -68,7 +68,7 @@ namespace DemeoMods.DifficultyMod.UI
             CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, -1.6f), "Enemy Attack Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyAttackMultiplier(text => { UpdateText(_EnemyAttackMultiplier, text); }); });
             CreateButton(enemyHPMultiplier.transform, new Vector3(1f, 0.15f, -1.6f), "Enemy Attack Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyAttackMultiplier(text => { UpdateText(_EnemyAttackMultiplier, text); }); });
 
-            MelonLogger.Msg("Completed Creating UI Elements.");
+            MelonLogger.Msg("Initialized UI Elements.");
         }
 
         private static void UpdateText(TextMeshPro textMeshPro, float text)

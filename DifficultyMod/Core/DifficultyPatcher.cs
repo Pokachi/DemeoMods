@@ -9,11 +9,11 @@ using UnityEngine;
 
 namespace DemeoMods.DifficultyMod.Core
 {
-    class DifficultyPatcher
+    static class DifficultyPatcher
     {
         private static GameStateMachine StateMachine { get; set; } 
 
-        public DifficultyPatcher()
+        public static void SetGameStateMachine()
         {
             StateMachine = GameObject.Find("GameLogic").GetComponent<GameStateMachine>();
         }
