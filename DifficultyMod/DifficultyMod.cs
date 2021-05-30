@@ -9,11 +9,16 @@ namespace DemeoMods.DifficultyMod
     {
         private const string LOBBY_SCENE_NAME = "LobbySteamVR";
 
-		public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+        public override void OnApplicationStart()
+        {
+            MelonLogger.Msg("Initializing...");
+            DifficultySettings.RegisterSettings();
+        }
+
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             if (LOBBY_SCENE_NAME.Equals(sceneName))
             {
-                MelonLogger.Msg("Initializing...");
 
                 new GameObject("Difficulty Menu", typeof(DifficultyMenu));
                 DifficultyPatcher.SetGameStateMachine();

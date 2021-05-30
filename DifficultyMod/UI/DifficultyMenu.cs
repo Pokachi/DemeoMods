@@ -57,16 +57,37 @@ namespace DemeoMods.DifficultyMod.UI
             enemyHPMultiplier.transform.localPosition = Vector3.zero;
             enemyHPMultiplier.SetActive(true);
 
-            CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 1.4f), 3.5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro _EnemyHPMultiplier = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier Text", DifficultySettings.EnemyHPMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, 0.4f), "Enemy HP Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyHPMultiplier(text => { UpdateText(_EnemyHPMultiplier, text); }); });
-            CreateButton(enemyHPMultiplier.transform, new Vector3(1f, 0.15f, 0.4f), "Enemy HP Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyHPMultiplier(text => { UpdateText(_EnemyHPMultiplier, text); }); });
+            CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 1.4f), 3.25f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro enemyHPMultiplierValue = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier Text", DifficultySettings.EnemyHPMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, 0.4f), "Enemy HP Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyHPMultiplier(text => { UpdateText(enemyHPMultiplierValue, text); }); });
+            CreateButton(enemyHPMultiplier.transform, new Vector3(1.1f, 0.15f, 0.4f), "Enemy HP Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyHPMultiplier(text => { UpdateText(enemyHPMultiplierValue, text); }); });
+
+            // Enemy Attack Multiplier
+            GameObject enemyAttackMultiplier = new GameObject("Enemy Attack Multiplier");
+            enemyAttackMultiplier.transform.SetParent(difficultySettingsPageOne.transform);
+            enemyAttackMultiplier.transform.localScale = Vector3.one;
+            enemyAttackMultiplier.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            enemyAttackMultiplier.transform.localPosition = Vector3.zero;
+            enemyAttackMultiplier.SetActive(true);
+
+            CreateText(enemyAttackMultiplier.transform, new Vector3(0.036f, 0.15f, -.6f), 3.25f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro enemyAttackMultiplierValue = CreateText(enemyAttackMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier Text", DifficultySettings.EnemyAttackMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(enemyAttackMultiplier.transform, new Vector3(-1f, 0.15f, -1.6f), "Enemy Attack Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyAttackMultiplier(text => { UpdateText(enemyAttackMultiplierValue, text); }); });
+            CreateButton(enemyAttackMultiplier.transform, new Vector3(1.1f, 0.15f, -1.6f), "Enemy Attack Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyAttackMultiplier(text => { UpdateText(enemyAttackMultiplierValue, text); }); });
 
 
-            CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, -.6f), 3.5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro _EnemyAttackMultiplier = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier Text", DifficultySettings.EnemyAttackMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, -1.6f), "Enemy Attack Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyAttackMultiplier(text => { UpdateText(_EnemyAttackMultiplier, text); }); });
-            CreateButton(enemyHPMultiplier.transform, new Vector3(1f, 0.15f, -1.6f), "Enemy Attack Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyAttackMultiplier(text => { UpdateText(_EnemyAttackMultiplier, text); }); });
+            // Energy Gain Multiplier
+            GameObject energyGainMultiplier = new GameObject("Energy Gain Multiplier");
+            energyGainMultiplier.transform.SetParent(difficultySettingsPageOne.transform);
+            energyGainMultiplier.transform.localScale = Vector3.one;
+            energyGainMultiplier.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            energyGainMultiplier.transform.localPosition = Vector3.zero;
+            energyGainMultiplier.SetActive(true);
+
+            CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 3.25f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro energyGainMultiplierValue = CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain Multiplier Text", DifficultySettings.EnergyGainMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(energyGainMultiplier.transform, new Vector3(-1f, 0.15f, -3.6f), "Energy Gain Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
+            CreateButton(energyGainMultiplier.transform, new Vector3(1.1f, 0.15f, -3.6f), "Energy Gain Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
 
             MelonLogger.Msg("Initialized UI Elements.");
         }

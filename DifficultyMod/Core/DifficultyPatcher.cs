@@ -58,7 +58,7 @@ namespace DemeoMods.DifficultyMod.Core
         }
 
         [HarmonyPatch(typeof(Piece), "CreatePiece")]
-        public static class EnemyHPMultiplierPatcher
+        class EnemyHPMultiplierPatcher
         {
             static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnemyHPMultiplier), new[] { typeof(int), typeof(PieceConfig) });
 
@@ -86,7 +86,7 @@ namespace DemeoMods.DifficultyMod.Core
         }
 
         [HarmonyPatch(typeof(Piece), "CreatePiece")]
-        public static class EnemyAttackMultiplierPatcher
+        class EnemyAttackMultiplierPatcher
         {
             static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnemyAttackMultiplier), new[] { typeof(int), typeof(PieceConfig) });
 
@@ -108,6 +108,18 @@ namespace DemeoMods.DifficultyMod.Core
                         }
                     }
                     yield return instruction;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CardPowder), "GetPowderScale")]
+        class EnergyGainMultiplierPatcher
+        {
+            static void Postfix(ref float __result)
+            {
+                if (IsPrivateGame())
+                {
+                    __result *= DifficultySettings.EnergyGainMultiplier;
                 }
             }
         }
