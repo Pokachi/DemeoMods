@@ -9,9 +9,6 @@ namespace DemeoMods.DifficultyMod.UI
 {
     class DifficultyMenu : MonoBehaviour
     {
-
-        private TextMeshPro _EnemyHPMultiplier;
-
         private void Awake()
         {
             Initialize();
@@ -19,7 +16,7 @@ namespace DemeoMods.DifficultyMod.UI
 
         public void Initialize()
         {
-            MelonLogger.Msg("(DifficultyMod|Info) Initializing...");
+            MelonLogger.Msg("Creating UI Elements...");
             gameObject.SetActive(false);
             gameObject.layer = 5; //UI layer
 
@@ -36,9 +33,10 @@ namespace DemeoMods.DifficultyMod.UI
             transform.rotation = Quaternion.Euler(275, 40, 0);
             transform.localScale = new Vector3(3, 1, 2);
 
+            gameObject.AddComponent<BoxCollider>();
+
             gameObject.SetActive(true);
 
-            MelonLogger.Msg("Creating UI Elements...");
 
             // First Page
             GameObject difficultySettingsPageOne = new GameObject("Difficulty Settings 1");
@@ -60,10 +58,15 @@ namespace DemeoMods.DifficultyMod.UI
             enemyHPMultiplier.SetActive(true);
 
             CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 1.4f), 3.5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
-            _EnemyHPMultiplier = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier Text", DifficultySettings.EnemyHPMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro _EnemyHPMultiplier = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy HP Multiplier Text", DifficultySettings.EnemyHPMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
             CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, 0.4f), "Enemy HP Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyHPMultiplier(text => { UpdateText(_EnemyHPMultiplier, text); }); });
             CreateButton(enemyHPMultiplier.transform, new Vector3(1f, 0.15f, 0.4f), "Enemy HP Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyHPMultiplier(text => { UpdateText(_EnemyHPMultiplier, text); }); });
 
+
+            CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, -.6f), 3.5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro _EnemyAttackMultiplier = CreateText(enemyHPMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Attack Multiplier Text", DifficultySettings.EnemyAttackMultiplier.ToString(), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(enemyHPMultiplier.transform, new Vector3(-1f, 0.15f, -1.6f), "Enemy Attack Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyAttackMultiplier(text => { UpdateText(_EnemyAttackMultiplier, text); }); });
+            CreateButton(enemyHPMultiplier.transform, new Vector3(1f, 0.15f, -1.6f), "Enemy Attack Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyAttackMultiplier(text => { UpdateText(_EnemyAttackMultiplier, text); }); });
 
             MelonLogger.Msg("Completed Creating UI Elements.");
         }
@@ -75,7 +78,7 @@ namespace DemeoMods.DifficultyMod.UI
 
         private static ClickableButton CreateButton(Transform parent, Vector3 position, string buttonName, string meshName, Action callback)
         {
-            GameObject gameObject = new GameObject(buttonName, typeof(MeshFilter), typeof(MeshRenderer), typeof(BoxCollider), typeof(ClickableButton), typeof(MenuButtonHoverEffect));
+            GameObject gameObject = new GameObject(buttonName, typeof(MeshFilter), typeof(MeshRenderer), typeof(MenuButtonHoverEffect), typeof(ClickableButton));
             gameObject.SetActive(false);
             gameObject.layer = 5; //UI layer
 
@@ -95,19 +98,17 @@ namespace DemeoMods.DifficultyMod.UI
             MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
             meshRenderer.material = Resources.FindObjectsOfTypeAll<Material>().First(x => x.name == "MainMenuMat");
 
-            // Box Collider
-            BoxCollider boxCollider = gameObject.GetComponent<BoxCollider>();
-            boxCollider.size = new Vector3(1.65f, 0.49f, 1.27f);
-
-            // ClickableButton
-            ClickableButton clickableButton = gameObject.GetComponent<ClickableButton>();
-            clickableButton.InitButton(0, "", callback, false);
-
             // Menu Button Hover Effect
             MenuButtonHoverEffect menuButtonHoverEffect = gameObject.GetComponent<MenuButtonHoverEffect>();
             menuButtonHoverEffect.hoverMaterial = Resources.FindObjectsOfTypeAll<Material>().First(x => x.name == "MainMenuHover");
             menuButtonHoverEffect.Init();
 
+            // ClickableButton
+            ClickableButton clickableButton = gameObject.GetComponent<ClickableButton>();
+            clickableButton.InitButton(0, "", callback, false);
+
+            // We add Box Collider so we don't need to make any adjustments
+            BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
 
             gameObject.SetActive(true);
 
@@ -122,8 +123,9 @@ namespace DemeoMods.DifficultyMod.UI
 
         private static TextMeshPro CreateText(Transform parent, Vector3 position, float fontSize, Color color, string name, string text, TextAlignmentOptions alignment, FontStyles fontStyles)
         {
-            GameObject gameObject = new GameObject(text, typeof(TextMeshPro));
+            GameObject gameObject = new GameObject(name, typeof(TextMeshPro));
             gameObject.SetActive(false);
+            gameObject.layer = 5; //UI layer
 
             // RectTransform
             RectTransform rectTransform = (RectTransform) gameObject.transform;
