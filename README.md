@@ -1,7 +1,7 @@
 # GENERAL INFORMATION:
 Collection of DemeoMods I may or may not make.
 
-Currently, It'll just double all enemy HP. To turn it off, you'll have to uninstall the mod. Alternative, you can use the MelonLoader's "--no-mods" arguement to not load any mods.
+Currently, tt'll add a Difficulty Menu where you can adjust Enemy HP Multiplier before going into a game.
 
 Planned Mods:
 1. Difficulty Mod
