@@ -1,10 +1,4 @@
-﻿using Boardgame;
-using Boardgame.BoardEntities;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
+﻿using System;
 
 namespace DemeoMods.DifficultyMod.Core
 {
@@ -38,17 +32,6 @@ namespace DemeoMods.DifficultyMod.Core
             callBack(EnemyHPMultiplier);
         }
 
-        public static int ModifyEnemyHPMultiplier(int defaultHP, PieceConfig pieceConfig)
-        {
-            if (pieceConfig.HasPieceType(DataKeys.PieceType.Enemy))
-            {
-                return (int)(defaultHP * EnemyHPMultiplier);
-            }
-
-            return defaultHP;
-        }
-
-
         public static void DecreaseEnemyAttackMultiplier(Action<float> callBack)
         {
             if (EnemyAttackMultiplier > ENEMY_ATTACK_MULTIPLIER_MIN)
@@ -67,73 +50,6 @@ namespace DemeoMods.DifficultyMod.Core
             }
 
             callBack(EnemyAttackMultiplier);
-        }
-
-        public static int ModifyEnemyAttackMultiplier(int defaultAttack, PieceConfig pieceConfig)
-        {
-            if (pieceConfig.HasPieceType(DataKeys.PieceType.Enemy))
-            {
-                return (int)(defaultAttack * EnemyAttackMultiplier);
-            }
-
-            return defaultAttack;
-        }
-
-        [HarmonyPatch(typeof(Piece), "CreatePiece")]
-        public static class EnemyHPMultiplierPatcher
-        {
-            private const int numInstructionToWait = 1;
-            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultySettings), nameof(ModifyEnemyHPMultiplier), new[] { typeof(int), typeof(PieceConfig) });
-
-            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                foreach (CodeInstruction instruction in instructions)
-                {
-                    if (instruction.opcode == OpCodes.Callvirt)
-                    {
-                        string strOperand = instruction.operand.ToString();
-                        if (strOperand.Contains("get_StartHealth"))
-                        {
-                            yield return instruction;
-
-                            yield return new CodeInstruction(OpCodes.Ldarg_0);
-                            yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
-
-                            continue;
-                        }
-                    }
-
-                    yield return instruction;
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(Piece), "CreatePiece")]
-        public static class EnemyAttackMultiplierPatcher
-        {
-            private const int numInstructionToWait = 1;
-            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultySettings), nameof(ModifyEnemyAttackMultiplier), new[] { typeof(int), typeof(PieceConfig) });
-
-            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                foreach (CodeInstruction instruction in instructions)
-                {
-                    if (instruction.opcode == OpCodes.Callvirt)
-                    {
-                        string strOperand = instruction.operand.ToString();
-                        if (strOperand.Contains("get_AttackDamage"))
-                        {
-                            yield return instruction;
-
-                            yield return new CodeInstruction(OpCodes.Ldarg_0);
-                            yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
-
-                            continue;
-                        }
-                    }
-                    yield return instruction;
-                }
-            }
         }
     }
 }
