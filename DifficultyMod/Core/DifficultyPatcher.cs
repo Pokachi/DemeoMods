@@ -1,8 +1,10 @@
 ﻿using Boardgame;
 using Boardgame.BoardEntities;
+using Boardgame.BoardgameActions;
 using Boardgame.Data;
 using Boardgame.Networking;
 using Boardgame.SerializableEvents;
+using DataKeys;
 using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
@@ -55,7 +57,7 @@ namespace DemeoMods.DifficultyMod.Core
 
         private static bool IsPrivateGame()
         {
-            CreateGameMode gameMode = (CreateGameMode)(typeof(GameStateMachine).GetField("createGameMode", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(StateMachine));
+            CreateGameMode gameMode = (CreateGameMode) typeof(GameStateMachine).GetField("createGameMode", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(StateMachine);
             return gameMode == CreateGameMode.Private;
         }
 
@@ -134,6 +136,18 @@ namespace DemeoMods.DifficultyMod.Core
                 if (IsPrivateGame())
                 {
                     __instance.goldAmount = (int) (__instance.goldAmount * DifficultySettings.GoldPileGainMultiplier);
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CardHandController), "GetCardSellValue")]
+        class CardSaleMultiplierPatcher
+        {
+            static void Postfix(ref int __result)
+            {
+                if (IsPrivateGame())
+                {
+                    __result = (int) (__result * DifficultySettings.CardSaleMultiplier);
                 }
             }
         }

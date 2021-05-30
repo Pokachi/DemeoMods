@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 
 
 // Melon Loader
-[assembly: MelonInfo(typeof(DifficultyMod), "Difficulty Mod", "0.1.1", "Reena")]
+[assembly: MelonInfo(typeof(DifficultyMod), "Difficulty Mod", "0.2", "Reena")]
 [assembly: MelonGame("Resolution Games", "Demeo")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
