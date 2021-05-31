@@ -8,10 +8,11 @@ Difficulty Mods is currently working in progress. This mod aims to adjust variou
 1. Adjust Enemy HP
 1. Adjust Enemy Damage
 1. Adjust Energy Gain from discard, killing enemy, and attacking (might separate this into 3 separating settings, not sure)
-1. Adjust Gold Gain from Gold Piles
+1. Adjust Gold Gained from Gold Piles
+1. Adjust Card Selling Price in the Shop in between Levels.
+1. Adjust Card Costs in the Shops in between Levels.
 
 ### Planned Features
-1. Selling Card Multiplier
 1. Enable Enemy Opening Doors Toggle
 1. Enable Coin Flip Toggle
 1. Ability to Set Coin Flip Damage
@@ -34,7 +35,7 @@ This mod depends on MelonLoader v0.3.1, available [here](https://github.com/Lava
 1. Once MelonLoader is installed, run the game once to setup all the directories.
 
 # INSTALLATION:
-1. Go to the [releases](https://github.com/Pokachi/DemeoMods/releases/tag/0.1) tab and download the DifficultyMod.dll file from the latest release.
+1. Go to the [releases](https://github.com/Pokachi/DemeoMods/releases) tab and download the DifficultyMod.dll file from the latest release.
 1. Put the DifficultyMod.dll under Mod folder created by MelonLoader in your game directory.
 
 

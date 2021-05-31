@@ -1,5 +1,6 @@
 ﻿using Boardgame;
 using Boardgame.BoardEntities;
+using Boardgame.Cards;
 using Boardgame.Data;
 using Boardgame.Networking;
 using Boardgame.SerializableEvents;
@@ -30,7 +31,7 @@ namespace DemeoMods.DifficultyMod.Core
 
             if (pieceConfig.HasPieceType(DataKeys.PieceType.Enemy))
             {
-                return (int)(defaultHP * DifficultySettings.EnemyHPMultiplier);
+                return (int) (defaultHP * DifficultySettings.EnemyHPMultiplier);
             }
 
             return defaultHP;
@@ -47,7 +48,7 @@ namespace DemeoMods.DifficultyMod.Core
 
             if (pieceConfig.HasPieceType(DataKeys.PieceType.Enemy))
             {
-                return (int)(defaultAttack * DifficultySettings.EnemyAttackMultiplier);
+                return (int) (defaultAttack * DifficultySettings.EnemyAttackMultiplier);
             }
 
             return defaultAttack;
@@ -55,7 +56,7 @@ namespace DemeoMods.DifficultyMod.Core
 
         private static bool IsPrivateGame()
         {
-            CreateGameMode gameMode = (CreateGameMode)(typeof(GameStateMachine).GetField("createGameMode", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(StateMachine));
+            CreateGameMode gameMode = (CreateGameMode) typeof(GameStateMachine).GetField("createGameMode", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(StateMachine);
             return gameMode == CreateGameMode.Private;
         }
 
@@ -134,6 +135,56 @@ namespace DemeoMods.DifficultyMod.Core
                 if (IsPrivateGame())
                 {
                     __instance.goldAmount = (int) (__instance.goldAmount * DifficultySettings.GoldPileGainMultiplier);
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CardHandController), "GetCardSellValue")]
+        class CardSaleMultiplierPatcher
+        {
+            static void Postfix(ref int __result)
+            {
+                if (IsPrivateGame())
+                {
+                    __result = (int) (__result * DifficultySettings.CardSaleMultiplier);
+                }
+            }
+        }
+
+
+        public static int ModifyCardCostInShop(int defaultCardCost)
+        {
+
+            // Do not modify the Attack if the game is public (i.e. anyone can join without room code)
+            if (!IsPrivateGame())
+            {
+                return defaultCardCost;
+            }
+
+            return (int) (defaultCardCost * DifficultySettings.CardCostMultiplier);
+        }
+
+        [HarmonyPatch(typeof(CardShopView), "Show", typeof(CardShopEntry[]), typeof(ICardCategoryProvider))]
+        class CardCosMultiplierPatcher
+        {
+            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyCardCostInShop), new[] { typeof(int) });
+
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                foreach (CodeInstruction instruction in instructions)
+                {
+                    if (instruction.opcode == OpCodes.Ldfld)
+                    {
+                        string strOperand = instruction.operand.ToString();
+                        if (strOperand.Contains("System.Int32 cost"))
+                        {
+                            yield return instruction;
+                            yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+
+                            continue;
+                        }
+                    }
+                    yield return instruction;
                 }
             }
         }

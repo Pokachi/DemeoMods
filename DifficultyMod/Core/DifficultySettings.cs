@@ -10,6 +10,8 @@ namespace DemeoMods.DifficultyMod.Core
         private const string MELON_PREF_ENEMY_ATTACK_MULTIPLIER_NAME = "EnemyAttackMultiplier";
         private const string MELON_PREF_ENERGY_GAIN_MULTIPLIER_NAME = "EnergyGainMultiplier";
         private const string MELON_PREF_GOLD_PILE_GAIN_MULTIPLIER_NAME = "GoldGainMultiplier";
+        private const string MELON_PREF_CARD_SALE_MULTIPLIER_NAME = "CardSaleMultiplier";
+        private const string MELON_PREF_CARD_COST_MULTIPLIER_NAME = "CardCostMultiplier";
 
         private const float ENEMY_HP_MULTIPLIER_MIN = 0.25f;
         private const float ENEMY_HP_MULTIPLIER_MAX = 5f;
@@ -19,16 +21,23 @@ namespace DemeoMods.DifficultyMod.Core
         private const float ENERGY_GAIN_MULTIPLIER_MAX = 5f;
         private const float GOLD_PILE_GAIN_MULTIPLIER_MIN = 0.1f;
         private const float GOLD_PILE_GAIN_MULTIPLIER_MAX = 5f;
+        private const float CARD_SALE_MULTIPLIER_MIN = 0.1f;
+        private const float CARD_SALE_MULTIPLIER_MAX = 5f;
+        private const float CARD_COST_MULTIPLIER_MIN = 0.1f;
+        private const float CARD_COST_MULTIPLIER_MAX = 5f;
 
         public static void RegisterSettings()
         {
             MelonPreferences.CreateCategory(MELON_PREF_NAME, "Demeo Difficulty Settings");
-            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_HP_MULTIPLIER_NAME, 1f, "Enemy HP Multiplier");
-            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_ATTACK_MULTIPLIER_NAME, 1f, "Enemy Attack Multiplier");
-            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENERGY_GAIN_MULTIPLIER_NAME, 1f, "Energy Gain Multiplier");
-            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_GOLD_PILE_GAIN_MULTIPLIER_NAME, 1f, "Gold Pile Gain Multiplier");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_HP_MULTIPLIER_NAME, 1f, "Enemy HP");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_ATTACK_MULTIPLIER_NAME, 1f, "Enemy Attack");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENERGY_GAIN_MULTIPLIER_NAME, 1f, "Energy Gain");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_GOLD_PILE_GAIN_MULTIPLIER_NAME, 1f, "Gold Gained From Gold Pile");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_CARD_SALE_MULTIPLIER_NAME, 1f, "Gold Gained From Selling Cards");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_CARD_COST_MULTIPLIER_NAME, 1f, "Gold Cost When Buying Cards");
         }
 
+        #region Properties
         public static float EnemyHPMultiplier
         {
             get
@@ -79,6 +88,34 @@ namespace DemeoMods.DifficultyMod.Core
 
         }
 
+        public static float CardSaleMultiplier
+        {
+            get
+            {
+                return MelonPreferences.GetEntryValue<float>(MELON_PREF_NAME, MELON_PREF_CARD_SALE_MULTIPLIER_NAME);
+            }
+            set
+            {
+                MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_CARD_SALE_MULTIPLIER_NAME, value);
+            }
+
+        }
+
+        public static float CardCostMultiplier
+        {
+            get
+            {
+                return MelonPreferences.GetEntryValue<float>(MELON_PREF_NAME, MELON_PREF_CARD_COST_MULTIPLIER_NAME);
+            }
+            set
+            {
+                MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_CARD_COST_MULTIPLIER_NAME, value);
+            }
+
+        }
+        #endregion Properties
+
+        #region Property_Modifier
         public static void DecreaseEnemyHPMultiplier(Action<float> callBack)
         {
             if (EnemyHPMultiplier > ENEMY_HP_MULTIPLIER_MIN)
@@ -146,7 +183,7 @@ namespace DemeoMods.DifficultyMod.Core
                 GoldPileGainMultiplier = (float)Math.Round(GoldPileGainMultiplier - 0.1f, 2);
             }
 
-            callBack(EnergyGainMultiplier);
+            callBack(GoldPileGainMultiplier);
         }
 
         public static void IncreaseGoldPileGainMultiplier(Action<float> callBack)
@@ -158,5 +195,46 @@ namespace DemeoMods.DifficultyMod.Core
 
             callBack(GoldPileGainMultiplier);
         }
+
+        public static void DecreaseCardSaleMultiplier(Action<float> callBack)
+        {
+            if (CardSaleMultiplier > CARD_SALE_MULTIPLIER_MIN)
+            {
+                CardSaleMultiplier = (float)Math.Round(CardSaleMultiplier - 0.1f, 2);
+            }
+
+            callBack(CardSaleMultiplier);
+        }
+
+        public static void IncreaseCardSaleMultiplier(Action<float> callBack)
+        {
+            if (CardSaleMultiplier < CARD_SALE_MULTIPLIER_MAX)
+            {
+                CardSaleMultiplier = (float)Math.Round(CardSaleMultiplier + 0.1f, 2);
+            }
+
+            callBack(CardSaleMultiplier);
+        }
+
+        public static void DecreaseCardCostMultiplier(Action<float> callBack)
+        {
+            if (CardCostMultiplier > CARD_COST_MULTIPLIER_MIN)
+            {
+                CardCostMultiplier = (float)Math.Round(CardCostMultiplier - 0.1f, 2);
+            }
+
+            callBack(CardCostMultiplier);
+        }
+
+        public static void IncreaseCardCostMultiplier(Action<float> callBack)
+        {
+            if (CardCostMultiplier < CARD_COST_MULTIPLIER_MAX)
+            {
+                CardCostMultiplier = (float)Math.Round(CardCostMultiplier + 0.1f, 2);
+            }
+
+            callBack(CardCostMultiplier);
+        }
+        #endregion Property_Modifier
     }
 }
