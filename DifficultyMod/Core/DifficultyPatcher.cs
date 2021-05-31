@@ -205,6 +205,18 @@ namespace DemeoMods.DifficultyMod.Core
             }
         }
 
+        public static int ModifyPowerIndex(int defaultPI, AIDirectorContext context)
+        {
+            // Do not modify the Attack if the game is public (i.e. anyone can join without room code)
+            if (!IsPrivateGame())
+            {
+                return defaultPI;
+            }
+
+            int powerIndexOnBoard = context.dataHelper.PowerIndexOnBoard(false, false);
+            return (int)((defaultPI + powerIndexOnBoard) * DifficultySettings.EnemyRespawnMultiplier - powerIndexOnBoard);
+        }
+
         [HarmonyPatch(typeof(AIDirectorController2), "DynamicSpawning")]
         class EnemyCanRespawnTogglePatcher
         {
@@ -218,6 +230,37 @@ namespace DemeoMods.DifficultyMod.Core
                     }
                 }
                 return true;
+            }
+
+            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyPowerIndex), new[] { typeof(int), typeof(AIDirectorContext) });
+
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                bool foundStart = false;
+                foreach (CodeInstruction instruction in instructions)
+                {
+                    if (instruction.opcode == OpCodes.Callvirt)
+                    {
+                        string strOperand = instruction.operand.ToString();
+                        if (strOperand.Contains("DifficultPowerIndexDelta"))
+                        {
+                            foundStart = true;
+                        }
+                    } else if (foundStart && instruction.opcode == OpCodes.Ldloc_0) {
+                        foundStart = false;
+
+                        MelonLoader.MelonLogger.Msg(instruction);
+                        yield return instruction;
+                        MelonLoader.MelonLogger.Msg("NEW");
+                        yield return new CodeInstruction(OpCodes.Ldarg_1);
+                        yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+
+                        continue;
+                    }
+
+                    MelonLoader.MelonLogger.Msg(instruction);
+                   yield return instruction;
+                }
             }
         }
     }
