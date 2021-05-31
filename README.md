@@ -34,7 +34,7 @@ This mod depends on MelonLoader v0.3.1, available [here](https://github.com/Lava
 1. Once MelonLoader is installed, run the game once to setup all the directories.
 
 # INSTALLATION:
-1. Go to the [releases](https://github.com/Pokachi/DemeoMods/releases/tag/0.1) tab and download the DifficultyMod.dll file from the latest release.
+1. Go to the [releases](https://github.com/Pokachi/DemeoMods/releases) tab and download the DifficultyMod.dll file from the latest release.
 1. Put the DifficultyMod.dll under Mod folder created by MelonLoader in your game directory.
 
 
