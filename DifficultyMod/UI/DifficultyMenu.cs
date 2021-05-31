@@ -271,10 +271,6 @@ namespace DemeoMods.DifficultyMod.UI
         {
             return CreateText(parent, position, Quaternion.Euler(90, 0, 0), fontSize, color, null, name, text, alignment, fontStyles);
         }
-        private static TextMeshPro CreateText(Transform parent, Vector3 position, Quaternion rotation, float fontSize, Color color, string name, string text, TextAlignmentOptions alignment, FontStyles fontStyles)
-        {
-            return CreateText(parent, position, rotation, fontSize, color, null, name, text, alignment, fontStyles);
-        }
 
         private static TextMeshPro CreateText(Transform parent, Vector3 position, Quaternion rotation, float fontSize, Color color, TMP_ColorGradient gradient, string name, string text, TextAlignmentOptions alignment, FontStyles fontStyles)
         {
