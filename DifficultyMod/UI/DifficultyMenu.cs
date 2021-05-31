@@ -9,11 +9,15 @@ namespace DemeoMods.DifficultyMod.UI
 {
     class DifficultyMenu : MonoBehaviour
     {
-        private const int TOTAL_PAGES = 2;
+        private const int TOTAL_PAGES = 3;
         private static int currentPage = 1;
 
         private static GameObject difficultySettingsPageOne;
         private static GameObject difficultySettingsPageTwo;
+        private static GameObject difficultySettingsPageThree;
+
+        private static TextMeshPro enemyOpenDoorDescription;
+        private static TextMeshPro enemyOpenDoorButtonText;
 
         private void Awake()
         {
@@ -44,7 +48,6 @@ namespace DemeoMods.DifficultyMod.UI
             gameObject.SetActive(true);
 
             #region First_Page
-            // First Page
             difficultySettingsPageOne = CreateContainer(transform, "Difficulty Settings 1");
 
             // Header
@@ -64,22 +67,21 @@ namespace DemeoMods.DifficultyMod.UI
             CreateButton(enemyAttackMultiplier.transform, new Vector3(-1.2f, 0.15f, -1.6f), "Enemy Attack Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyAttackMultiplier(text => { UpdateText(enemyAttackMultiplierValue, text); }); });
             CreateButton(enemyAttackMultiplier.transform, new Vector3(1.3f, 0.15f, -1.6f), "Enemy Attack Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyAttackMultiplier(text => { UpdateText(enemyAttackMultiplierValue, text); }); });
 
-            // Energy Gain Multiplier
-            GameObject energyGainMultiplier = CreateContainer(difficultySettingsPageOne.transform, "Energy Gain Multiplier");
-            CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro energyGainMultiplierValue = CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain Multiplier Text", floatToPercentStr(DifficultySettings.EnergyGainMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(energyGainMultiplier.transform, new Vector3(-1.2f, 0.15f, -3.6f), "Energy Gain Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
-            CreateButton(energyGainMultiplier.transform, new Vector3(1.3f, 0.15f, -3.6f), "Energy Gain Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
+            // Enemy Open Door Toggle
+            GameObject enemyOpenDoorToggle = CreateContainer(difficultySettingsPageOne.transform, "Enemy Open Door");
+            enemyOpenDoorDescription = CreateText(enemyOpenDoorToggle.transform, new Vector3(0.036f, 0.15f, -2.6f), 3.5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Can Open Door", TextAlignmentOptions.Center, FontStyles.Normal);
+            ClickableButton enemyOpenDoorButton = CreateButton(enemyOpenDoorToggle.transform, new Vector3(0.036f, 0.15f, -3.6f), Quaternion.Euler(270, 0, 0), "Enemy Open Door Toggle", "Disable", "UIMenuMainButton", () => { DifficultySettings.ToggleEnemyCanOpenDoor(result => { updateEnemyCanOpenDoorString(result); }); }, new Vector3(0.5f, 0.66f, 0.5f));
+            enemyOpenDoorButtonText = enemyOpenDoorButton.GetComponentInChildren<TextMeshPro>();
+            updateEnemyCanOpenDoorString(DifficultySettings.EnemyCanOpenDoors);
 
             // Navigation Button
             GameObject pageOneNavigationButtons = CreateContainer(difficultySettingsPageOne.transform, "Navigation Buttons");
-            CreateButton(pageOneNavigationButtons.transform, new Vector3(-1.5f, 0.15f, -5.6f), "Previous Page", "DreadArrowDown", () => { ChangePage((currentPage - 1) % TOTAL_PAGES); }, new Vector3 (0.7f, 0.7f, 0.7f));
+            CreateButton(pageOneNavigationButtons.transform, new Vector3(-1.5f, 0.15f, -5.6f), "Previous Page", "DreadArrowDown", () => { ChangePage((currentPage - 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
             CreateText(pageOneNavigationButtons.transform, new Vector3(0.036f, 0.15f, -5.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Page 1", TextAlignmentOptions.Center, FontStyles.Normal);
             CreateButton(pageOneNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
             #endregion First_Page
 
             #region Second_Page
-            // First Page
             difficultySettingsPageTwo = CreateContainer(transform, "Difficulty Settings 2");
             difficultySettingsPageTwo.SetActive(false);
 
@@ -115,7 +117,36 @@ namespace DemeoMods.DifficultyMod.UI
 
             #endregion Second_Page
 
+            #region Third_Page
+            difficultySettingsPageThree = CreateContainer(transform, "Difficulty Settings 3");
+            difficultySettingsPageThree.SetActive(false);
+
+            // Header
+            CreateText(difficultySettingsPageThree.transform, new Vector3(0.036f, 0.15f, 2.4f), 3f, new Color(0.878f, 0.752f, 0.384f, 1), "Difficulty Menu", TextAlignmentOptions.Center, FontStyles.UpperCase);
+
+            // Energy Gain Multiplier
+            GameObject energyGainMultiplier = CreateContainer(difficultySettingsPageThree.transform, "Energy Gain Multiplier");
+            CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro energyGainMultiplierValue = CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain Multiplier Text", floatToPercentStr(DifficultySettings.EnergyGainMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(energyGainMultiplier.transform, new Vector3(-1.2f, 0.15f, -3.6f), "Energy Gain Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
+            CreateButton(energyGainMultiplier.transform, new Vector3(1.3f, 0.15f, -3.6f), "Energy Gain Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
+
+            // Navigation Button
+            GameObject pageThreeNavigationButtons = CreateContainer(difficultySettingsPageThree.transform, "Navigation Buttons");
+            CreateButton(pageThreeNavigationButtons.transform, new Vector3(-1.5f, 0.15f, -5.6f), "Previous Page", "DreadArrowDown", () => { ChangePage((currentPage - 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
+            CreateText(pageThreeNavigationButtons.transform, new Vector3(0.036f, 0.15f, -5.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Page 3", TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(pageThreeNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
+            #endregion Third_page
+
             MelonLogger.Msg("Initialized UI Elements.");
+        }
+
+        private static void updateEnemyCanOpenDoorString(bool canOpenDoor)
+        {
+            string enemyOpenDoorDescriptionValue = canOpenDoor ? "Enemy Can Open Doors" : "Enemy Can't Open Doors";
+            string enemyOpenDoorButtonTextValue = canOpenDoor ? "Disable" : "Enable";
+            UpdateText(enemyOpenDoorDescription, enemyOpenDoorDescriptionValue);
+            UpdateText(enemyOpenDoorButtonText, enemyOpenDoorButtonTextValue);
         }
 
         private static void ChangePage(int newPage)
@@ -127,10 +158,17 @@ namespace DemeoMods.DifficultyMod.UI
                 case 1:
                     difficultySettingsPageOne.SetActive(true);
                     difficultySettingsPageTwo.SetActive(false);
+                    difficultySettingsPageThree.SetActive(false);
                     break;
                 case 2:
                     difficultySettingsPageOne.SetActive(false);
                     difficultySettingsPageTwo.SetActive(true);
+                    difficultySettingsPageThree.SetActive(false);
+                    break;
+                case 3:
+                    difficultySettingsPageOne.SetActive(false);
+                    difficultySettingsPageTwo.SetActive(false);
+                    difficultySettingsPageThree.SetActive(true);
                     break;
             }
         }
@@ -143,6 +181,11 @@ namespace DemeoMods.DifficultyMod.UI
         private static void UpdateText(TextMeshPro textMeshPro, float number)
         {
             textMeshPro.SetText(floatToPercentStr(number));
+        }
+
+        private static void UpdateText(TextMeshPro textMeshPro, string text)
+        {
+            textMeshPro.SetText(text);
         }
 
         private static GameObject CreateContainer(Transform parent, string containerName)
@@ -160,20 +203,36 @@ namespace DemeoMods.DifficultyMod.UI
 
         private static ClickableButton CreateButton(Transform parent, Vector3 position, string buttonName, string meshName, Action callback)
         {
-            return CreateButton(parent, position, buttonName, meshName, callback, new Vector3(0.5f, 0.5f, 0.5f));
+            return CreateButton(parent, position, Quaternion.Euler(0, 90, 0), buttonName, "", meshName, callback, new Vector3(0.5f, 0.5f, 0.5f));
         }
 
         private static ClickableButton CreateButton(Transform parent, Vector3 position, string buttonName, string meshName, Action callback, Vector3 scale)
         {
-            GameObject gameObject = new GameObject(buttonName, typeof(MeshFilter), typeof(MeshRenderer), typeof(MenuButtonHoverEffect), typeof(ClickableButton));
+            return CreateButton(parent, position, Quaternion.Euler(0, 90, 0), buttonName, "", meshName, callback, scale);
+        }
+
+        private static ClickableButton CreateButton(Transform parent, Vector3 position, Quaternion rotation, string buttonName, string buttonText, string meshName, Action callback)
+        {
+            return CreateButton(parent, position, rotation, buttonName, buttonText, meshName, callback, new Vector3(0.5f, 0.5f, 0.5f));
+        }
+
+        private static ClickableButton CreateButton(Transform parent, Vector3 position, Quaternion rotation, string buttonName, string buttonText, string meshName, Action callback, Vector3 scale)
+        {
+            GameObject gameObject = new GameObject(buttonName, typeof(MeshFilter), typeof(MeshRenderer), typeof(MenuButtonHoverEffect));
             gameObject.SetActive(false);
             gameObject.layer = 5; //UI layer
+
+            // Create Button Text
+            if (!string.IsNullOrEmpty(buttonText))
+            {
+                CreateText(gameObject.transform, new Vector3(0f, 0f, 0.215f), Quaternion.Euler(0, 180, 180), 5, new Color(1, 1, 1, 1), Resources.FindObjectsOfTypeAll<TMP_ColorGradient>().First(x => x.name == "Demeo - Main Menu Buttons"), buttonName + "Text", buttonText, TextAlignmentOptions.Center, FontStyles.UpperCase);
+            }
 
             new MenuButtonHoverEffect();
             // Transform
             Transform transform = gameObject.transform;
             transform.SetParent(parent, false);
-            transform.localRotation = Quaternion.Euler(0, 90, 0);
+            transform.localRotation = rotation;
             transform.localPosition = position;
             transform.localScale = scale;
 
@@ -190,12 +249,12 @@ namespace DemeoMods.DifficultyMod.UI
             menuButtonHoverEffect.hoverMaterial = Resources.FindObjectsOfTypeAll<Material>().First(x => x.name == "MainMenuHover");
             menuButtonHoverEffect.Init();
 
-            // ClickableButton
-            ClickableButton clickableButton = gameObject.GetComponent<ClickableButton>();
-            clickableButton.InitButton(0, "", callback, false);
+            // ClickableButton (We have to add clickable button after we add the child component;
+            ClickableButton clickableButton = gameObject.AddComponent<ClickableButton>();
+            clickableButton.InitButton(0, buttonText, callback, false);
 
-            // We add Box Collider so we don't need to make any adjustments
-            BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
+            // We add Box Collider last so we don't need to make any adjustments
+            gameObject.AddComponent<BoxCollider>();
 
             gameObject.SetActive(true);
 
@@ -205,10 +264,15 @@ namespace DemeoMods.DifficultyMod.UI
 
         private static TextMeshPro CreateText(Transform parent, Vector3 position, float fontSize, Color color, string text, TextAlignmentOptions alignment, FontStyles fontStyles)
         {
-            return CreateText(parent, position, fontSize, color, text, text, alignment, fontStyles);
+            return CreateText(parent, position, Quaternion.Euler(90, 0, 0), fontSize, color, null, text, text, alignment, fontStyles);
         }
 
         private static TextMeshPro CreateText(Transform parent, Vector3 position, float fontSize, Color color, string name, string text, TextAlignmentOptions alignment, FontStyles fontStyles)
+        {
+            return CreateText(parent, position, Quaternion.Euler(90, 0, 0), fontSize, color, null, name, text, alignment, fontStyles);
+        }
+
+        private static TextMeshPro CreateText(Transform parent, Vector3 position, Quaternion rotation, float fontSize, Color color, TMP_ColorGradient gradient, string name, string text, TextAlignmentOptions alignment, FontStyles fontStyles)
         {
             GameObject gameObject = new GameObject(name, typeof(TextMeshPro));
             gameObject.SetActive(false);
@@ -220,9 +284,8 @@ namespace DemeoMods.DifficultyMod.UI
             rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
             rectTransform.pivot = new Vector2(0.5f, 0.5f);
-            rectTransform.offsetMax = new Vector2(1.9245f, 0.5738f);
-            rectTransform.offsetMin = new Vector2(-1.8525f, -0.2737f);
-            rectTransform.localRotation = Quaternion.Euler(90, 0, 0);
+            rectTransform.sizeDelta = new Vector2(3.777f, 0.7597f);
+            rectTransform.localRotation = rotation;
             rectTransform.localScale = Vector3.one;
             rectTransform.localPosition = position;
 
@@ -233,7 +296,11 @@ namespace DemeoMods.DifficultyMod.UI
             textMeshPro.text = text;
             textMeshPro.fontSize = fontSize;
             textMeshPro.color = color;
+            textMeshPro.colorGradientPreset = gradient;
             textMeshPro.alignment = alignment;
+            textMeshPro.fontSizeMax = fontSize;
+            textMeshPro.fontSizeMin = 1f;
+            textMeshPro.enableAutoSizing = true;
 
             gameObject.SetActive(true);
 

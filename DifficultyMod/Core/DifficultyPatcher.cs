@@ -188,5 +188,20 @@ namespace DemeoMods.DifficultyMod.Core
                 }
             }
         }
+
+        [HarmonyPatch(typeof(PieceConfig), "CanOpenDoor", MethodType.Getter)]
+        class EnemyCanOpenDoorTogglePatcher
+        {
+            static void Postfix(ref bool __result)
+            {
+                if (IsPrivateGame())
+                {
+                    if (!DifficultySettings.EnemyCanOpenDoors)
+                    {
+                        __result = false;
+                    }
+                }
+            }
+        }
     }
 }
