@@ -1,4 +1,5 @@
 ﻿using Boardgame;
+using Boardgame.AIDirector;
 using Boardgame.BoardEntities;
 using Boardgame.Cards;
 using Boardgame.Data;
@@ -201,6 +202,22 @@ namespace DemeoMods.DifficultyMod.Core
                         __result = false;
                     }
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(AIDirectorController2), "DynamicSpawning")]
+        class EnemyCanRespawnTogglePatcher
+        {
+            static bool Prefix()
+            {
+                if (IsPrivateGame())
+                {
+                    if (!DifficultySettings.EnemyCanRespawn)
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
         }
     }

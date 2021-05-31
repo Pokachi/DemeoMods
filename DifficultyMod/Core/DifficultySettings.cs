@@ -13,6 +13,7 @@ namespace DemeoMods.DifficultyMod.Core
         private const string MELON_PREF_CARD_SALE_MULTIPLIER_NAME = "CardSaleMultiplier";
         private const string MELON_PREF_CARD_COST_MULTIPLIER_NAME = "CardCostMultiplier";
         private const string MELON_PREF_ENEMY_CAN_OPEN_DOOR_TOGGLE_NAME = "EnemyCanOpenDoorToggle";
+        private const string MELON_PREF_ENEMY_RESPAWN_TOGGLE_NAME = "EnemyRespawnToggle";
 
         private const float ENEMY_HP_MULTIPLIER_MIN = 0.25f;
         private const float ENEMY_HP_MULTIPLIER_MAX = 5f;
@@ -37,6 +38,7 @@ namespace DemeoMods.DifficultyMod.Core
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_CARD_SALE_MULTIPLIER_NAME, 1f, "Gold Gained From Selling Cards");
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_CARD_COST_MULTIPLIER_NAME, 1f, "Gold Cost When Buying Cards");
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_CAN_OPEN_DOOR_TOGGLE_NAME, true, "Enemy Can Open Doors");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_RESPAWN_TOGGLE_NAME, true, "Enemy Can Respawn");
         }
 
         #region Properties
@@ -125,6 +127,18 @@ namespace DemeoMods.DifficultyMod.Core
             set
             {
                 MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_ENEMY_CAN_OPEN_DOOR_TOGGLE_NAME, value);
+            }
+        }
+
+        public static bool EnemyCanRespawn
+        {
+            get
+            {
+                return MelonPreferences.GetEntryValue<bool>(MELON_PREF_NAME, MELON_PREF_ENEMY_RESPAWN_TOGGLE_NAME);
+            }
+            set
+            {
+                MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_ENEMY_RESPAWN_TOGGLE_NAME, value);
             }
         }
         #endregion Properties
@@ -254,6 +268,12 @@ namespace DemeoMods.DifficultyMod.Core
         {
             EnemyCanOpenDoors = !EnemyCanOpenDoors;
             callBack(EnemyCanOpenDoors);
+        }
+
+        public static void ToggleEnemyCanRespawn(Action<bool> callBack)
+        {
+            EnemyCanRespawn = !EnemyCanRespawn;
+            callBack(EnemyCanRespawn);
         }
         #endregion Property_Modifier
     }

@@ -15,9 +15,12 @@ namespace DemeoMods.DifficultyMod.UI
         private static GameObject difficultySettingsPageOne;
         private static GameObject difficultySettingsPageTwo;
         private static GameObject difficultySettingsPageThree;
+        private static GameObject difficultySettingsPageFour;
 
         private static TextMeshPro enemyOpenDoorDescription;
         private static TextMeshPro enemyOpenDoorButtonText;
+        private static TextMeshPro enemyRespawnDescription;
+        private static TextMeshPro enemyRespawnButtonText;
 
         private void Awake()
         {
@@ -47,7 +50,7 @@ namespace DemeoMods.DifficultyMod.UI
 
             gameObject.SetActive(true);
 
-            #region First_Page
+            #region First_Page(Monsters)
             difficultySettingsPageOne = CreateContainer(transform, "Difficulty Settings 1");
 
             // Header
@@ -81,40 +84,24 @@ namespace DemeoMods.DifficultyMod.UI
             CreateButton(pageOneNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
             #endregion First_Page
 
-            #region Second_Page
+            #region Second_Page(Monsters)
             difficultySettingsPageTwo = CreateContainer(transform, "Difficulty Settings 2");
             difficultySettingsPageTwo.SetActive(false);
-
+            
             // Header
             CreateText(difficultySettingsPageTwo.transform, new Vector3(0.036f, 0.15f, 2.4f), 3f, new Color(0.878f, 0.752f, 0.384f, 1), "Difficulty Menu", TextAlignmentOptions.Center, FontStyles.UpperCase);
 
-            // Gold Pile Multiplier
-            GameObject goldPileMultiplier = CreateContainer(difficultySettingsPageTwo.transform, "Gold Pile Multiplier");
-            CreateText(goldPileMultiplier.transform, new Vector3(0.036f, 0.15f, 1.4f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Gold Pile Amount", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro goldPileMultiplierValue = CreateText(goldPileMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Gold Pile Multiplier Text", floatToPercentStr(DifficultySettings.GoldPileGainMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(goldPileMultiplier.transform, new Vector3(-1.2f, 0.15f, 0.4f), "Gold Pile Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseGoldPileGainMultiplier(text => { UpdateText(goldPileMultiplierValue, text); }); });
-            CreateButton(goldPileMultiplier.transform, new Vector3(1.3f, 0.15f, 0.4f), "Gold Pile Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseGoldPileGainMultiplier(text => { UpdateText(goldPileMultiplierValue, text); }); });
-
-            // Card Sale Multiplier
-            GameObject cardSaleMultiplier = CreateContainer(difficultySettingsPageTwo.transform, "Card Sale Multiplier");
-            CreateText(cardSaleMultiplier.transform, new Vector3(0.036f, 0.15f, -0.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Card Selling Price", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro cardSaleMultiplierValue = CreateText(cardSaleMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Card Sale Multiplier Text", floatToPercentStr(DifficultySettings.CardSaleMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(cardSaleMultiplier.transform, new Vector3(-1.2f, 0.15f, -1.6f), "Card Sale Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseCardSaleMultiplier(text => { UpdateText(cardSaleMultiplierValue, text); }); });
-            CreateButton(cardSaleMultiplier.transform, new Vector3(1.3f, 0.15f, -1.6f), "Card Sale Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseCardSaleMultiplier(text => { UpdateText(cardSaleMultiplierValue, text); }); });
-
-            // Card Cost Multiplier
-            GameObject cardCostMultiplier = CreateContainer(difficultySettingsPageTwo.transform, "Card Cost Multiplier");
-            CreateText(cardCostMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Card Buying Price", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro cardCostMultiplierValue = CreateText(cardCostMultiplier.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Card Cost Multiplier Text", floatToPercentStr(DifficultySettings.CardCostMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(cardCostMultiplier.transform, new Vector3(-1.2f, 0.15f, -3.6f), "Card Cost Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseCardCostMultiplier(text => { UpdateText(cardCostMultiplierValue, text); }); });
-            CreateButton(cardCostMultiplier.transform, new Vector3(1.3f, 0.15f, -3.6f), "Card Cost Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseCardCostMultiplier(text => { UpdateText(cardCostMultiplierValue, text); }); });
+            // Enemy Open Door Toggle
+            GameObject enemyRespawnToggle = CreateContainer(difficultySettingsPageTwo.transform, "Enemy Respawn");
+            enemyRespawnDescription = CreateText(enemyRespawnToggle.transform, new Vector3(0.036f, 0.15f, 1.4f), 5f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Can Respawn", TextAlignmentOptions.Center, FontStyles.Normal);
+            ClickableButton enemyRespawnButton = CreateButton(enemyRespawnToggle.transform, new Vector3(0.036f, 0.15f, 0.4f), Quaternion.Euler(270, 0, 0), "Enemy Respawn Toggle", "Disable", "UIMenuMainButton", () => { DifficultySettings.ToggleEnemyCanRespawn(result => { updateEnemyCanRespawnString(result); }); }, new Vector3(0.5f, 0.66f, 0.5f));
+            enemyRespawnButtonText = enemyRespawnButton.GetComponentInChildren<TextMeshPro>();
 
             // Navigation Button
             GameObject pageTwoNavigationButtons = CreateContainer(difficultySettingsPageTwo.transform, "Navigation Buttons");
             CreateButton(pageTwoNavigationButtons.transform, new Vector3(-1.5f, 0.15f, -5.6f), "Previous Page", "DreadArrowDown", () => { ChangePage((currentPage - 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
             CreateText(pageTwoNavigationButtons.transform, new Vector3(0.036f, 0.15f, -5.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Page 2", TextAlignmentOptions.Center, FontStyles.Normal);
             CreateButton(pageTwoNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
-
             #endregion Second_Page
 
             #region Third_Page
@@ -124,29 +111,72 @@ namespace DemeoMods.DifficultyMod.UI
             // Header
             CreateText(difficultySettingsPageThree.transform, new Vector3(0.036f, 0.15f, 2.4f), 3f, new Color(0.878f, 0.752f, 0.384f, 1), "Difficulty Menu", TextAlignmentOptions.Center, FontStyles.UpperCase);
 
-            // Energy Gain Multiplier
-            GameObject energyGainMultiplier = CreateContainer(difficultySettingsPageThree.transform, "Energy Gain Multiplier");
-            CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro energyGainMultiplierValue = CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain Multiplier Text", floatToPercentStr(DifficultySettings.EnergyGainMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(energyGainMultiplier.transform, new Vector3(-1.2f, 0.15f, -3.6f), "Energy Gain Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
-            CreateButton(energyGainMultiplier.transform, new Vector3(1.3f, 0.15f, -3.6f), "Energy Gain Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
+            // Gold Pile Multiplier
+            GameObject goldPileMultiplier = CreateContainer(difficultySettingsPageThree.transform, "Gold Pile Multiplier");
+            CreateText(goldPileMultiplier.transform, new Vector3(0.036f, 0.15f, 1.4f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Gold Pile Amount", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro goldPileMultiplierValue = CreateText(goldPileMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Gold Pile Multiplier Text", floatToPercentStr(DifficultySettings.GoldPileGainMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(goldPileMultiplier.transform, new Vector3(-1.2f, 0.15f, 0.4f), "Gold Pile Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseGoldPileGainMultiplier(text => { UpdateText(goldPileMultiplierValue, text); }); });
+            CreateButton(goldPileMultiplier.transform, new Vector3(1.3f, 0.15f, 0.4f), "Gold Pile Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseGoldPileGainMultiplier(text => { UpdateText(goldPileMultiplierValue, text); }); });
+
+            // Card Sale Multiplier
+            GameObject cardSaleMultiplier = CreateContainer(difficultySettingsPageThree.transform, "Card Sale Multiplier");
+            CreateText(cardSaleMultiplier.transform, new Vector3(0.036f, 0.15f, -0.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Card Selling Price", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro cardSaleMultiplierValue = CreateText(cardSaleMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Card Sale Multiplier Text", floatToPercentStr(DifficultySettings.CardSaleMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(cardSaleMultiplier.transform, new Vector3(-1.2f, 0.15f, -1.6f), "Card Sale Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseCardSaleMultiplier(text => { UpdateText(cardSaleMultiplierValue, text); }); });
+            CreateButton(cardSaleMultiplier.transform, new Vector3(1.3f, 0.15f, -1.6f), "Card Sale Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseCardSaleMultiplier(text => { UpdateText(cardSaleMultiplierValue, text); }); });
+
+            // Card Cost Multiplier
+            GameObject cardCostMultiplier = CreateContainer(difficultySettingsPageThree.transform, "Card Cost Multiplier");
+            CreateText(cardCostMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Card Buying Price", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro cardCostMultiplierValue = CreateText(cardCostMultiplier.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Card Cost Multiplier Text", floatToPercentStr(DifficultySettings.CardCostMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(cardCostMultiplier.transform, new Vector3(-1.2f, 0.15f, -3.6f), "Card Cost Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseCardCostMultiplier(text => { UpdateText(cardCostMultiplierValue, text); }); });
+            CreateButton(cardCostMultiplier.transform, new Vector3(1.3f, 0.15f, -3.6f), "Card Cost Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseCardCostMultiplier(text => { UpdateText(cardCostMultiplierValue, text); }); });
 
             // Navigation Button
             GameObject pageThreeNavigationButtons = CreateContainer(difficultySettingsPageThree.transform, "Navigation Buttons");
             CreateButton(pageThreeNavigationButtons.transform, new Vector3(-1.5f, 0.15f, -5.6f), "Previous Page", "DreadArrowDown", () => { ChangePage((currentPage - 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
             CreateText(pageThreeNavigationButtons.transform, new Vector3(0.036f, 0.15f, -5.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Page 3", TextAlignmentOptions.Center, FontStyles.Normal);
             CreateButton(pageThreeNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
-            #endregion Third_page
+            #endregion Third_Page
+
+            #region Fourth_Page
+            difficultySettingsPageFour = CreateContainer(transform, "Difficulty Settings 3");
+            difficultySettingsPageFour.SetActive(false);
+
+            // Header
+            CreateText(difficultySettingsPageFour.transform, new Vector3(0.036f, 0.15f, 2.4f), 3f, new Color(0.878f, 0.752f, 0.384f, 1), "Difficulty Menu", TextAlignmentOptions.Center, FontStyles.UpperCase);
+
+            // Energy Gain Multiplier
+            GameObject energyGainMultiplier = CreateContainer(difficultySettingsPageFour.transform, "Energy Gain Multiplier");
+            CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro energyGainMultiplierValue = CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain Multiplier Text", floatToPercentStr(DifficultySettings.EnergyGainMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(energyGainMultiplier.transform, new Vector3(-1.2f, 0.15f, -3.6f), "Energy Gain Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
+            CreateButton(energyGainMultiplier.transform, new Vector3(1.3f, 0.15f, -3.6f), "Energy Gain Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
+
+            // Navigation Button
+            GameObject pageFourNavigationButtons = CreateContainer(difficultySettingsPageFour.transform, "Navigation Buttons");
+            CreateButton(pageFourNavigationButtons.transform, new Vector3(-1.5f, 0.15f, -5.6f), "Previous Page", "DreadArrowDown", () => { ChangePage((currentPage - 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
+            CreateText(pageFourNavigationButtons.transform, new Vector3(0.036f, 0.15f, -5.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Page 4", TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(pageFourNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
+            #endregion Fourth_page
 
             MelonLogger.Msg("Initialized UI Elements.");
         }
 
         private static void updateEnemyCanOpenDoorString(bool canOpenDoor)
         {
-            string enemyOpenDoorDescriptionValue = canOpenDoor ? "Enemy Can Open Doors" : "Enemy Can't Open Doors";
-            string enemyOpenDoorButtonTextValue = canOpenDoor ? "Disable" : "Enable";
-            UpdateText(enemyOpenDoorDescription, enemyOpenDoorDescriptionValue);
-            UpdateText(enemyOpenDoorButtonText, enemyOpenDoorButtonTextValue);
+            string description = canOpenDoor ? "Enemy Can Open Doors" : "Enemy Can't Open Doors";
+            string button = canOpenDoor ? "Disable" : "Enable";
+            UpdateText(enemyOpenDoorDescription, description);
+            UpdateText(enemyOpenDoorButtonText, button);
+        }
+
+        private static void updateEnemyCanRespawnString(bool canRespawn)
+        {
+            string description = canRespawn ? "Enemy Can Respawn" : "Enemy Can't Respawn";
+            string button = canRespawn ? "Disable" : "Enable";
+            UpdateText(enemyRespawnDescription, description);
+            UpdateText(enemyRespawnButtonText, button);
         }
 
         private static void ChangePage(int newPage)
