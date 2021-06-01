@@ -118,7 +118,7 @@ namespace DemeoMods.DifficultyMod.UI
             CreateButton(pageTwoNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
             #endregion Second_Page
 
-            #region Third_Page
+            #region Third_Page (Gold and Shop)
             difficultySettingsPageThree = CreateContainer(transform, "Difficulty Settings 3");
             difficultySettingsPageThree.SetActive(false);
 
@@ -153,16 +153,31 @@ namespace DemeoMods.DifficultyMod.UI
             CreateButton(pageThreeNavigationButtons.transform, new Vector3(1.6f, 0.15f, -5.6f), "Next Page", "DreadArrowUp", () => { ChangePage((currentPage + 1) % TOTAL_PAGES); }, new Vector3(0.7f, 0.7f, 0.7f));
             #endregion Third_Page
 
-            #region Fourth_Page
+            #region Fourth_Page (Energy)
             difficultySettingsPageFour = CreateContainer(transform, "Difficulty Settings 3");
             difficultySettingsPageFour.SetActive(false);
 
             // Header
             CreateText(difficultySettingsPageFour.transform, new Vector3(0.036f, 0.15f, 2.4f), 3f, new Color(0.878f, 0.752f, 0.384f, 1), "Difficulty Menu", TextAlignmentOptions.Center, FontStyles.UpperCase);
 
-            // Energy Gain Multiplier
+            // Attack Energy Gain Multiplier
+            GameObject attackEnergyGainMultiplier = CreateContainer(difficultySettingsPageFour.transform, "Attack Energy Gain Multiplier");
+            CreateText(attackEnergyGainMultiplier.transform, new Vector3(0.036f, 0.15f, 1.4f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Attack Energy Gain", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro attackEnergyGainMultiplierValue = CreateText(attackEnergyGainMultiplier.transform, new Vector3(0.036f, 0.15f, 0.4f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Attack Energy Gain Multiplier Text", floatToPercentStr(DifficultySettings.AttackEnergyGainMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(attackEnergyGainMultiplier.transform, new Vector3(-1.3f, 0.15f, 0.4f), "Attack Energy Gain Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseAttackEnergyGainMultiplier(text => { UpdateText(attackEnergyGainMultiplierValue, text); }); });
+            CreateButton(attackEnergyGainMultiplier.transform, new Vector3(1.4f, 0.15f, 0.4f), "Attack Energy Gain Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseAttackEnergyGainMultiplier(text => { UpdateText(attackEnergyGainMultiplierValue, text); }); });
+
+            // Kill Energy Gain Multiplier
+            GameObject killEnergyGainMultiplier = CreateContainer(difficultySettingsPageFour.transform, "Kill Energy Gain Multiplier");
+            CreateText(killEnergyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Kill Energy Gain", TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateText(killEnergyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -1f), 2f, new Color(0.0392f, 0.0157f, 0, 1), "(Only when non trivial enemies die)", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro killEnergyGainMultiplierValue = CreateText(killEnergyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Kill Energy Gain Multiplier Text", floatToPercentStr(DifficultySettings.KillEnergyGainMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(killEnergyGainMultiplier.transform, new Vector3(-1.3f, 0.15f, -1.6f), "Kill Energy Gain Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseKillEnergyGainMultiplier(text => { UpdateText(killEnergyGainMultiplierValue, text); }); });
+            CreateButton(killEnergyGainMultiplier.transform, new Vector3(1.4f, 0.15f, -1.6f), "Kill Energy Gain Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseKillEnergyGainMultiplier(text => { UpdateText(killEnergyGainMultiplierValue, text); }); });
+
+            // Discard Energy Gain Multiplier
             GameObject energyGainMultiplier = CreateContainer(difficultySettingsPageFour.transform, "Energy Gain Multiplier");
-            CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain", TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Discard Energy Gain", TextAlignmentOptions.Center, FontStyles.Normal);
             TextMeshPro energyGainMultiplierValue = CreateText(energyGainMultiplier.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Energy Gain Multiplier Text", floatToPercentStr(DifficultySettings.EnergyGainMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
             CreateButton(energyGainMultiplier.transform, new Vector3(-1.3f, 0.15f, -3.6f), "Energy Gain Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
             CreateButton(energyGainMultiplier.transform, new Vector3(1.4f, 0.15f, -3.6f), "Energy Gain Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnergyGainMultiplier(text => { UpdateText(energyGainMultiplierValue, text); }); });
