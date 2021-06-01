@@ -5,20 +5,21 @@ Collection of DemeoMods I may or may not make.
 Difficulty Mods is currently working in progress. This mod aims to adjust various settings the game has to offer. It is important to note that this mod is turned off for public online lobbies. This is to make sure people don't randomly join a modded game. This mod will only work if you host your game in a private online lobby or offline single player lobby.
 
 ### Features
-1. Adjust Enemy HP
-1. Adjust Enemy Damage
-1. Enable Enemy From Opening Doors Toggle
-1. Adjust Energy Gain from discard, killing enemy, and attacking (might separate this into 3 separating settings, not sure)
-1. Adjust Gold Gained from Gold Piles
-1. Adjust Card Selling Price in the Shop in between Levels.
-1. Adjust Card Costs in the Shops in between Levels.
+1. Adjust enemy HP
+1. Adjust enemy damage
+1. Adjust enemy movement range
+1. Enable enemy respawning toggle
+1. Adjust enemy count
+1. Enable enemy from opening doors toggle
+1. Adjust gold gained from gold piles
+1. Adjust card selling price in the shop in between levels.
+1. Adjust card costs in the shops in between levels.
+1. Adjust energy gained from discard, killing enemy, and attacking (might separate this into 3 separating settings, not sure)
 
 ### Planned Features
 1. Enable Coin Flip Toggle
 1. Ability to Set Coin Flip Damage
 1. Enable Hunters Mark Stacking Toggle
-1. Enable Monster Respawn Toggle
-1. Monster Respawn Rate Multiplier ? (not sure how to do this yet)
 1. Mutators? e.g. all enemies does poison on attack, randomly become invulnerable for a turn, etc. (not sure how to do this yet)
 
 ## Other Planned Mods:

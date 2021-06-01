@@ -13,6 +13,9 @@ namespace DemeoMods.DifficultyMod.Core
         private const string MELON_PREF_CARD_SALE_MULTIPLIER_NAME = "CardSaleMultiplier";
         private const string MELON_PREF_CARD_COST_MULTIPLIER_NAME = "CardCostMultiplier";
         private const string MELON_PREF_ENEMY_CAN_OPEN_DOOR_TOGGLE_NAME = "EnemyCanOpenDoorToggle";
+        private const string MELON_PREF_ENEMY_RESPAWN_TOGGLE_NAME = "EnemyRespawnToggle";
+        private const string MELON_PREF_ENEMY_COUNT_MULTIPLIER_NAME = "EnemyCountMultiplier";
+        private const string MELON_PREF_ENEMY_MOVE_MULTIPLIER_NAME = "EnemyMoveMultiplier";
 
         private const float ENEMY_HP_MULTIPLIER_MIN = 0.25f;
         private const float ENEMY_HP_MULTIPLIER_MAX = 5f;
@@ -26,6 +29,10 @@ namespace DemeoMods.DifficultyMod.Core
         private const float CARD_SALE_MULTIPLIER_MAX = 5f;
         private const float CARD_COST_MULTIPLIER_MIN = 0.1f;
         private const float CARD_COST_MULTIPLIER_MAX = 5f;
+        private const float ENEMY_COUNT_MULTIPLIER_MIN = 0.25f;
+        private const float ENEMY_COUNT_MULTIPLIER_MAX = 10f;
+        private const float ENEMY_MOVE_MULTIPLIER_MIN = 0.25f;
+        private const float ENEMY_MOVE_MULTIPLIER_MAX = 5f;
 
         public static void RegisterSettings()
         {
@@ -37,9 +44,36 @@ namespace DemeoMods.DifficultyMod.Core
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_CARD_SALE_MULTIPLIER_NAME, 1f, "Gold Gained From Selling Cards");
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_CARD_COST_MULTIPLIER_NAME, 1f, "Gold Cost When Buying Cards");
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_CAN_OPEN_DOOR_TOGGLE_NAME, true, "Enemy Can Open Doors");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_RESPAWN_TOGGLE_NAME, true, "Enemy Can Respawn");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_COUNT_MULTIPLIER_NAME, 1f, "Enemy Spawn Rate");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_MOVE_MULTIPLIER_NAME, 1f, "Enemy Movement Range");
         }
 
         #region Properties
+        public static float EnemyMoveMultiplier
+        {
+            get
+            {
+                return MelonPreferences.GetEntryValue<float>(MELON_PREF_NAME, MELON_PREF_ENEMY_MOVE_MULTIPLIER_NAME);
+            }
+            set
+            {
+                MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_ENEMY_MOVE_MULTIPLIER_NAME, value);
+            }
+        }
+
+        public static float EnemyCountMultiplier
+        {
+            get
+            {
+                return MelonPreferences.GetEntryValue<float>(MELON_PREF_NAME, MELON_PREF_ENEMY_COUNT_MULTIPLIER_NAME);
+            }
+            set
+            {
+                MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_ENEMY_COUNT_MULTIPLIER_NAME, value);
+            }
+        }
+
         public static float EnemyHPMultiplier
         {
             get
@@ -127,9 +161,60 @@ namespace DemeoMods.DifficultyMod.Core
                 MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_ENEMY_CAN_OPEN_DOOR_TOGGLE_NAME, value);
             }
         }
+
+        public static bool EnemyCanRespawn
+        {
+            get
+            {
+                return MelonPreferences.GetEntryValue<bool>(MELON_PREF_NAME, MELON_PREF_ENEMY_RESPAWN_TOGGLE_NAME);
+            }
+            set
+            {
+                MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_ENEMY_RESPAWN_TOGGLE_NAME, value);
+            }
+        }
         #endregion Properties
 
         #region Property_Modifier
+        public static void DecreaseEnemyMoveMultiplier(Action<float> callBack)
+        {
+            if (EnemyMoveMultiplier > ENEMY_MOVE_MULTIPLIER_MIN)
+            {
+                EnemyMoveMultiplier = (float)Math.Round(EnemyMoveMultiplier - 0.25f, 2); ; ;
+            }
+
+            callBack(EnemyMoveMultiplier);
+        }
+
+        public static void IncreaseEnemyMoveMultiplier(Action<float> callBack)
+        {
+            if (EnemyMoveMultiplier < ENEMY_MOVE_MULTIPLIER_MAX)
+            {
+                EnemyMoveMultiplier = (float)Math.Round(EnemyMoveMultiplier + 0.25f, 2); ;
+            }
+
+            callBack(EnemyMoveMultiplier);
+        }
+        public static void DecreaseEnemyCountMultiplier(Action<float> callBack)
+        {
+            if (EnemyCountMultiplier > ENEMY_COUNT_MULTIPLIER_MIN)
+            {
+                EnemyCountMultiplier = (float)Math.Round(EnemyCountMultiplier - 0.25f, 2);
+            }
+
+            callBack(EnemyCountMultiplier);
+        }
+
+        public static void IncreaseEnemyCountMultiplier(Action<float> callBack)
+        {
+            if (EnemyCountMultiplier < ENEMY_COUNT_MULTIPLIER_MAX)
+            {
+                EnemyCountMultiplier = (float)Math.Round(EnemyCountMultiplier + 0.25f, 2);
+            }
+
+            callBack(EnemyCountMultiplier);
+        }
+
         public static void DecreaseEnemyHPMultiplier(Action<float> callBack)
         {
             if (EnemyHPMultiplier > ENEMY_HP_MULTIPLIER_MIN)
@@ -254,6 +339,12 @@ namespace DemeoMods.DifficultyMod.Core
         {
             EnemyCanOpenDoors = !EnemyCanOpenDoors;
             callBack(EnemyCanOpenDoors);
+        }
+
+        public static void ToggleEnemyCanRespawn(Action<bool> callBack)
+        {
+            EnemyCanRespawn = !EnemyCanRespawn;
+            callBack(EnemyCanRespawn);
         }
         #endregion Property_Modifier
     }

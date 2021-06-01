@@ -1,4 +1,5 @@
 ﻿using Boardgame;
+using Boardgame.AIDirector;
 using Boardgame.BoardEntities;
 using Boardgame.Cards;
 using Boardgame.Data;
@@ -31,7 +32,7 @@ namespace DemeoMods.DifficultyMod.Core
 
             if (pieceConfig.HasPieceType(DataKeys.PieceType.Enemy))
             {
-                return (int) (defaultHP * DifficultySettings.EnemyHPMultiplier);
+                return defaultHP * DifficultySettings.EnemyHPMultiplier < 0 ? 0 : (int) (defaultHP * DifficultySettings.EnemyHPMultiplier);
             }
 
             return defaultHP;
@@ -48,10 +49,27 @@ namespace DemeoMods.DifficultyMod.Core
 
             if (pieceConfig.HasPieceType(DataKeys.PieceType.Enemy))
             {
-                return (int) (defaultAttack * DifficultySettings.EnemyAttackMultiplier);
+                return defaultAttack * DifficultySettings.EnemyAttackMultiplier < 0 ? 0 : (int) (defaultAttack * DifficultySettings.EnemyAttackMultiplier);
             }
 
             return defaultAttack;
+        }
+
+        public static int ModifyEnemyMoveMultiplier(int defaultMove, PieceConfig pieceConfig)
+        {
+
+            // Do not modify the Attack if the game is public (i.e. anyone can join without room code)
+            if (!IsPrivateGame())
+            {
+                return defaultMove;
+            }
+
+            if (pieceConfig.HasPieceType(DataKeys.PieceType.Enemy))
+            {
+                return defaultMove * DifficultySettings.EnemyMoveMultiplier < 1 ? 1 : (int)(defaultMove * DifficultySettings.EnemyMoveMultiplier);
+            }
+
+            return defaultMove;
         }
 
         private static bool IsPrivateGame()
@@ -63,7 +81,9 @@ namespace DemeoMods.DifficultyMod.Core
         [HarmonyPatch(typeof(Piece), "CreatePiece")]
         class EnemyHPMultiplierPatcher
         {
-            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnemyHPMultiplier), new[] { typeof(int), typeof(PieceConfig) });
+            static MethodInfo modifyEnemyHP = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnemyHPMultiplier), new[] { typeof(int), typeof(PieceConfig) });
+            static MethodInfo modifyEnemyAttack = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnemyAttackMultiplier), new[] { typeof(int), typeof(PieceConfig) });
+            static MethodInfo modifyEnemMove = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnemyMoveMultiplier), new[] { typeof(int), typeof(PieceConfig) });
 
             static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
@@ -77,39 +97,32 @@ namespace DemeoMods.DifficultyMod.Core
                             yield return instruction;
 
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
-                            yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+                            yield return new CodeInstruction(OpCodes.Call, modifyEnemyHP);
 
                             continue;
                         }
-                    }
 
-                    yield return instruction;
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(Piece), "CreatePiece")]
-        class EnemyAttackMultiplierPatcher
-        {
-            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnemyAttackMultiplier), new[] { typeof(int), typeof(PieceConfig) });
-
-            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                foreach (CodeInstruction instruction in instructions)
-                {
-                    if (instruction.opcode == OpCodes.Callvirt)
-                    {
-                        string strOperand = instruction.operand.ToString();
                         if (strOperand.Contains("get_AttackDamage"))
                         {
                             yield return instruction;
 
                             yield return new CodeInstruction(OpCodes.Ldarg_0);
-                            yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+                            yield return new CodeInstruction(OpCodes.Call, modifyEnemyAttack);
+
+                            continue;
+                        }
+
+                        if (strOperand.Contains("get_MoveRange"))
+                        {
+                            yield return instruction;
+
+                            yield return new CodeInstruction(OpCodes.Ldarg_0);
+                            yield return new CodeInstruction(OpCodes.Call, modifyEnemMove);
 
                             continue;
                         }
                     }
+
                     yield return instruction;
                 }
             }
@@ -192,14 +205,108 @@ namespace DemeoMods.DifficultyMod.Core
         [HarmonyPatch(typeof(PieceConfig), "CanOpenDoor", MethodType.Getter)]
         class EnemyCanOpenDoorTogglePatcher
         {
-            static void Postfix(ref bool __result)
+            static void Postfix(ref bool __result, ref PieceConfig __instance)
             {
                 if (IsPrivateGame())
                 {
-                    if (!DifficultySettings.EnemyCanOpenDoors)
+                    if (!DifficultySettings.EnemyCanOpenDoors && __instance.HasPieceType(DataKeys.PieceType.Enemy))
                     {
                         __result = false;
                     }
+                }
+            }
+        }
+
+        public static int ModifyPowerIndex(int defaultPI, AIDirectorContext context)
+        {
+            // Do not modify the Attack if the game is public (i.e. anyone can join without room code)
+            if (!IsPrivateGame())
+            {
+                return defaultPI;
+            }
+
+            int powerIndexOnBoard = context.dataHelper.PowerIndexOnBoard(false, false);
+
+            return (int)((defaultPI + powerIndexOnBoard) * DifficultySettings.EnemyCountMultiplier - powerIndexOnBoard);
+        }
+
+        [HarmonyPatch(typeof(AIDirectorController2), "DynamicSpawning")]
+        class EnemyRespawnPatcher
+        {
+            static bool Prefix()
+            {
+                if (IsPrivateGame())
+                {
+                    if (!DifficultySettings.EnemyCanRespawn)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyPowerIndex), new[] { typeof(int), typeof(AIDirectorContext) });
+
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                bool foundStart = false;
+                foreach (CodeInstruction instruction in instructions)
+                {
+                    if (instruction.opcode == OpCodes.Callvirt)
+                    {
+                        string strOperand = instruction.operand.ToString();
+                        if (strOperand.Contains("DifficultPowerIndexDelta"))
+                        {
+                            foundStart = true;
+                        }
+                    } else if (foundStart && instruction.opcode == OpCodes.Ldloc_0) {
+                        foundStart = false;
+
+
+                        yield return instruction;
+
+                        yield return new CodeInstruction(OpCodes.Ldarg_1);
+                        yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+
+                        continue;
+                    }
+
+                   yield return instruction;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(AIDirectorController2), "HandleDiscoveredZone")]
+        class EnemySpawnPatcher
+        {
+            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyPowerIndex), new[] { typeof(int), typeof(AIDirectorContext) });
+
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                bool foundStart = false;
+                foreach (CodeInstruction instruction in instructions)
+                {
+                    if (instruction.opcode == OpCodes.Callvirt)
+                    {
+                        string strOperand = instruction.operand.ToString();
+                        if (strOperand.Contains("DifficultPowerIndexDelta"))
+                        {
+                            foundStart = true;
+                        }
+                    }
+                    else if (foundStart && instruction.opcode == OpCodes.Ldloc_0)
+                    {
+                        foundStart = false;
+
+                        yield return instruction;
+
+                        yield return new CodeInstruction(OpCodes.Ldarg_1);
+                        yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+
+                        continue;
+                    }
+
+                    yield return instruction;
                 }
             }
         }
