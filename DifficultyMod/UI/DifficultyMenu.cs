@@ -70,12 +70,12 @@ namespace DemeoMods.DifficultyMod.UI
             CreateButton(enemyAttackMultiplier.transform, new Vector3(-1.3f, 0.15f, -1.6f), "Enemy Attack Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyAttackMultiplier(text => { UpdateText(enemyAttackMultiplierValue, text); }); });
             CreateButton(enemyAttackMultiplier.transform, new Vector3(1.4f, 0.15f, -1.6f), "Enemy Attack Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyAttackMultiplier(text => { UpdateText(enemyAttackMultiplierValue, text); }); });
 
-            // Enemy Open Door Toggle
-            GameObject enemyOpenDoorToggle = CreateContainer(difficultySettingsPageOne.transform, "Enemy Open Door");
-            enemyOpenDoorDescription = CreateText(enemyOpenDoorToggle.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Can Open Door", TextAlignmentOptions.Center, FontStyles.Normal);
-            ClickableButton enemyOpenDoorButton = CreateButton(enemyOpenDoorToggle.transform, new Vector3(0.036f, 0.15f, -3.6f), Quaternion.Euler(270, 0, 0), "Enemy Open Door Toggle", "Disable", "UIMenuMainButton", () => { DifficultySettings.ToggleEnemyCanOpenDoor(result => { updateEnemyCanOpenDoorString(result); }); }, new Vector3(0.5f, 0.66f, 0.5f));
-            enemyOpenDoorButtonText = enemyOpenDoorButton.GetComponentInChildren<TextMeshPro>();
-            updateEnemyCanOpenDoorString(DifficultySettings.EnemyCanOpenDoors);
+            // Enemy Movement
+            GameObject enemyMove = CreateContainer(difficultySettingsPageOne.transform, "Enemy Move");
+            CreateText(enemyMove.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Movement Range", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro enemyMoveMultiplierValue = CreateText(enemyMove.transform, new Vector3(0.036f, 0.15f, -3.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Move Text", floatToPercentStr(DifficultySettings.EnemyMoveMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(enemyMove.transform, new Vector3(-1.3f, 0.15f, -3.6f), "Enemy Move Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyMoveMultiplier(text => { UpdateText(enemyMoveMultiplierValue, text); }); });
+            CreateButton(enemyMove.transform, new Vector3(1.4f, 0.15f, -3.6f), "Enemy Move Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyMoveMultiplier(text => { UpdateText(enemyMoveMultiplierValue, text); }); });
 
             // Navigation Button
             GameObject pageOneNavigationButtons = CreateContainer(difficultySettingsPageOne.transform, "Navigation Buttons");
@@ -97,12 +97,19 @@ namespace DemeoMods.DifficultyMod.UI
             ClickableButton enemyRespawnButton = CreateButton(enemyRespawnToggle.transform, new Vector3(0.036f, 0.15f, 0.4f), Quaternion.Euler(270, 0, 0), "Enemy Respawn Toggle", "Disable", "UIMenuMainButton", () => { DifficultySettings.ToggleEnemyCanRespawn(result => { updateEnemyCanRespawnString(result); }); }, new Vector3(0.5f, 0.66f, 0.5f));
             enemyRespawnButtonText = enemyRespawnButton.GetComponentInChildren<TextMeshPro>();
 
-            // Enemy Respawn Rate
-            GameObject enemyRespawnMultiplier = CreateContainer(difficultySettingsPageTwo.transform, "Enemy Respawn Multiplier");
-            CreateText(enemyRespawnMultiplier.transform, new Vector3(0.036f, 0.15f, -.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Respawn Rate", TextAlignmentOptions.Center, FontStyles.Normal);
-            TextMeshPro enemyRespawnMultiplierValue = CreateText(enemyRespawnMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Respawn Multiplier Text", floatToPercentStr(DifficultySettings.EnemyRespawnMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
-            CreateButton(enemyRespawnMultiplier.transform, new Vector3(-1.3f, 0.15f, -1.6f), "Enemy Respawn Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyRespawnMultiplier(text => { UpdateText(enemyRespawnMultiplierValue, text); }); });
-            CreateButton(enemyRespawnMultiplier.transform, new Vector3(1.4f, 0.15f, -1.6f), "Enemy Respawn Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyRespawnMultiplier(text => { UpdateText(enemyRespawnMultiplierValue, text); }); });
+            // Enemy Count
+            GameObject enemySpawnMultiplier = CreateContainer(difficultySettingsPageTwo.transform, "Enemy Spawn Multiplier");
+            CreateText(enemySpawnMultiplier.transform, new Vector3(0.036f, 0.15f, -.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Count", TextAlignmentOptions.Center, FontStyles.Normal);
+            TextMeshPro enemySpawnMultiplierValue = CreateText(enemySpawnMultiplier.transform, new Vector3(0.036f, 0.15f, -1.6f), 7f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Spawn Multiplier Text", floatToPercentStr(DifficultySettings.EnemyCountMultiplier), TextAlignmentOptions.Center, FontStyles.Normal);
+            CreateButton(enemySpawnMultiplier.transform, new Vector3(-1.3f, 0.15f, -1.6f), "Enemy Spawn Multiplier Down", "DreadArrowDown", () => { DifficultySettings.DecreaseEnemyCountMultiplier(text => { UpdateText(enemySpawnMultiplierValue, text); }); });
+            CreateButton(enemySpawnMultiplier.transform, new Vector3(1.4f, 0.15f, -1.6f), "Enemy Spawn Multiplier Up", "DreadArrowUp", () => { DifficultySettings.IncreaseEnemyCountMultiplier(text => { UpdateText(enemySpawnMultiplierValue, text); }); });
+
+            // Enemy Open Door Toggle
+            GameObject enemyOpenDoorToggle = CreateContainer(difficultySettingsPageTwo.transform, "Enemy Open Door");
+            enemyOpenDoorDescription = CreateText(enemyOpenDoorToggle.transform, new Vector3(0.036f, 0.15f, -2.6f), 4.4f, new Color(0.0392f, 0.0157f, 0, 1), "Enemy Can Open Door", TextAlignmentOptions.Center, FontStyles.Normal);
+            ClickableButton enemyOpenDoorButton = CreateButton(enemyOpenDoorToggle.transform, new Vector3(0.036f, 0.15f, -3.6f), Quaternion.Euler(270, 0, 0), "Enemy Open Door Toggle", "Disable", "UIMenuMainButton", () => { DifficultySettings.ToggleEnemyCanOpenDoor(result => { updateEnemyCanOpenDoorString(result); }); }, new Vector3(0.5f, 0.66f, 0.5f));
+            enemyOpenDoorButtonText = enemyOpenDoorButton.GetComponentInChildren<TextMeshPro>();
+            updateEnemyCanOpenDoorString(DifficultySettings.EnemyCanOpenDoors);
 
             // Navigation Button
             GameObject pageTwoNavigationButtons = CreateContainer(difficultySettingsPageTwo.transform, "Navigation Buttons");
@@ -190,22 +197,24 @@ namespace DemeoMods.DifficultyMod.UI
         {
             currentPage = newPage == 0 ? TOTAL_PAGES : newPage;
 
+            difficultySettingsPageOne.SetActive(false);
+            difficultySettingsPageTwo.SetActive(false);
+            difficultySettingsPageThree.SetActive(false);
+            difficultySettingsPageFour.SetActive(false);
+
             switch (currentPage)
             {
                 case 1:
                     difficultySettingsPageOne.SetActive(true);
-                    difficultySettingsPageTwo.SetActive(false);
-                    difficultySettingsPageThree.SetActive(false);
                     break;
                 case 2:
-                    difficultySettingsPageOne.SetActive(false);
                     difficultySettingsPageTwo.SetActive(true);
-                    difficultySettingsPageThree.SetActive(false);
                     break;
                 case 3:
-                    difficultySettingsPageOne.SetActive(false);
-                    difficultySettingsPageTwo.SetActive(false);
                     difficultySettingsPageThree.SetActive(true);
+                    break;
+                case 4:
+                    difficultySettingsPageFour.SetActive(true);
                     break;
             }
         }
