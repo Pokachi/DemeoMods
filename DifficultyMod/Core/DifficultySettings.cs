@@ -8,7 +8,9 @@ namespace DemeoMods.DifficultyMod.Core
         private const string MELON_PREF_NAME = "DemeoDifficultyMod";
         private const string MELON_PREF_ENEMY_HP_MULTIPLIER_NAME = "EnemyHpMultiplier";
         private const string MELON_PREF_ENEMY_ATTACK_MULTIPLIER_NAME = "EnemyAttackMultiplier";
-        private const string MELON_PREF_ENERGY_GAIN_MULTIPLIER_NAME = "EnergyGainMultiplier";
+        private const string MELON_PREF_ENERGY_GAIN_MULTIPLIER_NAME = "EnergyGainMultiplier"; // Trash Card
+        private const string MELON_PREF_ATTACK_ENERGY_GAIN_MULTIPLIER_NAME = "AttackEnergyGainMultiplier";
+        private const string MELON_PREF_KILL_ENERGY_GAIN_MULTIPLIER_NAME = "KillEnergyGainMultiplier";
         private const string MELON_PREF_GOLD_PILE_GAIN_MULTIPLIER_NAME = "GoldGainMultiplier";
         private const string MELON_PREF_CARD_SALE_MULTIPLIER_NAME = "CardSaleMultiplier";
         private const string MELON_PREF_CARD_COST_MULTIPLIER_NAME = "CardCostMultiplier";
@@ -21,7 +23,7 @@ namespace DemeoMods.DifficultyMod.Core
         private const float ENEMY_HP_MULTIPLIER_MAX = 5f;
         private const float ENEMY_ATTACK_MULTIPLIER_MIN = 0.25f;
         private const float ENEMY_ATTACK_MULTIPLIER_MAX = 5f;
-        private const float ENERGY_GAIN_MULTIPLIER_MIN = 0.1f;
+        private const float ENERGY_GAIN_MULTIPLIER_MIN = 0f;
         private const float ENERGY_GAIN_MULTIPLIER_MAX = 5f;
         private const float GOLD_PILE_GAIN_MULTIPLIER_MIN = 0.1f;
         private const float GOLD_PILE_GAIN_MULTIPLIER_MAX = 5f;
@@ -39,7 +41,9 @@ namespace DemeoMods.DifficultyMod.Core
             MelonPreferences.CreateCategory(MELON_PREF_NAME, "Demeo Difficulty Settings");
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_HP_MULTIPLIER_NAME, 1f, "Enemy HP");
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENEMY_ATTACK_MULTIPLIER_NAME, 1f, "Enemy Attack");
-            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENERGY_GAIN_MULTIPLIER_NAME, 1f, "Energy Gain");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ENERGY_GAIN_MULTIPLIER_NAME, 1f, "Trash Card Energy Gain");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_ATTACK_ENERGY_GAIN_MULTIPLIER_NAME, 1f, "Attack Enemy Energy Gain");
+            MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_KILL_ENERGY_GAIN_MULTIPLIER_NAME, 1f, "Kill Enemy Energy Gain");
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_GOLD_PILE_GAIN_MULTIPLIER_NAME, 1f, "Gold Gained From Gold Pile");
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_CARD_SALE_MULTIPLIER_NAME, 1f, "Gold Gained From Selling Cards");
             MelonPreferences.CreateEntry(MELON_PREF_NAME, MELON_PREF_CARD_COST_MULTIPLIER_NAME, 1f, "Gold Cost When Buying Cards");
@@ -107,6 +111,32 @@ namespace DemeoMods.DifficultyMod.Core
             set
             {
                 MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_ENERGY_GAIN_MULTIPLIER_NAME, value);
+            }
+
+        }
+
+        public static float AttackEnergyGainMultiplier
+        {
+            get
+            {
+                return MelonPreferences.GetEntryValue<float>(MELON_PREF_NAME, MELON_PREF_ATTACK_ENERGY_GAIN_MULTIPLIER_NAME);
+            }
+            set
+            {
+                MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_ATTACK_ENERGY_GAIN_MULTIPLIER_NAME, value);
+            }
+
+        }
+
+        public static float KillEnergyGainMultiplier
+        {
+            get
+            {
+                return MelonPreferences.GetEntryValue<float>(MELON_PREF_NAME, MELON_PREF_KILL_ENERGY_GAIN_MULTIPLIER_NAME);
+            }
+            set
+            {
+                MelonPreferences.SetEntryValue(MELON_PREF_NAME, MELON_PREF_KILL_ENERGY_GAIN_MULTIPLIER_NAME, value);
             }
 
         }
@@ -273,6 +303,46 @@ namespace DemeoMods.DifficultyMod.Core
             }
 
             callBack(EnergyGainMultiplier);
+        }
+
+        public static void DecreaseAttackEnergyGainMultiplier(Action<float> callBack)
+        {
+            if (AttackEnergyGainMultiplier > ENERGY_GAIN_MULTIPLIER_MIN)
+            {
+                AttackEnergyGainMultiplier = (float)Math.Round(AttackEnergyGainMultiplier - 0.1f, 2);
+            }
+
+            callBack(AttackEnergyGainMultiplier);
+        }
+
+        public static void IncreaseAttackEnergyGainMultiplier(Action<float> callBack)
+        {
+            if (AttackEnergyGainMultiplier < ENERGY_GAIN_MULTIPLIER_MAX)
+            {
+                AttackEnergyGainMultiplier = (float)Math.Round(AttackEnergyGainMultiplier + 0.1f, 2);
+            }
+
+            callBack(AttackEnergyGainMultiplier);
+        }
+
+        public static void DecreaseKillEnergyGainMultiplier(Action<float> callBack)
+        {
+            if (KillEnergyGainMultiplier > ENERGY_GAIN_MULTIPLIER_MIN)
+            {
+                KillEnergyGainMultiplier = (float)Math.Round(KillEnergyGainMultiplier - 0.1f, 2);
+            }
+
+            callBack(KillEnergyGainMultiplier);
+        }
+
+        public static void IncreaseKillEnergyGainMultiplier(Action<float> callBack)
+        {
+            if (KillEnergyGainMultiplier < ENERGY_GAIN_MULTIPLIER_MAX)
+            {
+                KillEnergyGainMultiplier = (float)Math.Round(KillEnergyGainMultiplier + 0.1f, 2);
+            }
+
+            callBack(KillEnergyGainMultiplier);
         }
 
         public static void DecreaseGoldPileGainMultiplier(Action<float> callBack)

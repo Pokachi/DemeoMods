@@ -14,7 +14,9 @@ Difficulty Mods is currently working in progress. This mod aims to adjust variou
 1. Adjust gold gained from gold piles
 1. Adjust card selling price in the shop in between levels.
 1. Adjust card costs in the shops in between levels.
-1. Adjust energy gained from discard, killing enemy, and attacking (might separate this into 3 separating settings, not sure)
+1. Adjust energy gained from discard
+1. Adjust energy gained from attacking
+1. Adjust energy gained from killing high valued enemies
 
 ### Planned Features
 1. Enable Coin Flip Toggle

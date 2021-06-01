@@ -128,14 +128,121 @@ namespace DemeoMods.DifficultyMod.Core
             }
         }
 
-        [HarmonyPatch(typeof(CardPowder), "GetPowderScale")]
+
+        public static float ModifyEnergyOnTrashCard(float defaultEnergy)
+        {
+            // Do not modify the Attack if the game is public (i.e. anyone can join without room code)
+            if (!IsPrivateGame())
+            {
+                return defaultEnergy;
+            }
+
+            return defaultEnergy * DifficultySettings.EnergyGainMultiplier;
+        }
+
+        public static float ModifyEnergyOnAttack(float defaultEnergy)
+        {
+            // Do not modify the Attack if the game is public (i.e. anyone can join without room code)
+            if (!IsPrivateGame())
+            {
+                return defaultEnergy;
+            }
+
+            return defaultEnergy * DifficultySettings.AttackEnergyGainMultiplier;
+        }
+
+        public static float ModifyEnergyOnKill(float defaultEnergy)
+        {
+            // Do not modify the Attack if the game is public (i.e. anyone can join without room code)
+            if (!IsPrivateGame())
+            {
+                return defaultEnergy;
+            }
+
+            MelonLoader.MelonLogger.Msg(defaultEnergy + " MULT " + DifficultySettings.KillEnergyGainMultiplier);
+            return defaultEnergy * DifficultySettings.KillEnergyGainMultiplier;
+        }
+
+        [HarmonyPatch(typeof(CardPowder), "OnTrashedCard")]
         class EnergyGainMultiplierPatcher
         {
-            static void Postfix(ref float __result)
+            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnergyOnTrashCard), new[] { typeof(int) });
+
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                if (IsPrivateGame())
+                foreach (CodeInstruction instruction in instructions)
                 {
-                    __result *= DifficultySettings.EnergyGainMultiplier;
+                    if (instruction.opcode == OpCodes.Mul)
+                    {
+                        yield return instruction;
+                        yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+
+                        continue;
+                    }
+                    yield return instruction;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CardPowder), "GetPowderIncreaseValueFromTrashedCard")]
+        class EnergyGainDisplayedMultiplierPatcher
+        {
+            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnergyOnTrashCard), new[] { typeof(float) });
+
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                foreach (CodeInstruction instruction in instructions)
+                {
+                    if (instruction.opcode == OpCodes.Mul)
+                    {
+                        yield return instruction;
+                        yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+
+                        continue;
+                    }
+                    yield return instruction;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CardPowder), "OnPlayerDealtDamage")]
+        class AttackEnergyGainMultiplierPatcher
+        {
+            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnergyOnAttack), new[] { typeof(float) });
+
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                foreach (CodeInstruction instruction in instructions)
+                {
+                    if (instruction.opcode == OpCodes.Mul)
+                    {
+                        yield return instruction;
+                        yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+
+                        continue;
+                    }
+                    yield return instruction;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CardPowder), "OnEnemyKilled")]
+        class KillEnergyGainMultiplierPatcher
+        {
+            static MethodInfo m_MyExtraMethod = AccessTools.Method(typeof(DifficultyPatcher), nameof(ModifyEnergyOnKill), new[] { typeof(float) });
+
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                foreach (CodeInstruction instruction in instructions)
+                {
+                    if (instruction.opcode == OpCodes.Mul)
+                    {
+                        yield return instruction;
+                        yield return new CodeInstruction(OpCodes.Call, m_MyExtraMethod);
+
+                        continue;
+                    }
+                    yield return instruction;
                 }
             }
         }
